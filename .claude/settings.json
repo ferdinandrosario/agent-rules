@@ -1,4 +1,20 @@
 {
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git remote -v*)"
+    ]
+  },
+  "skillListingMaxDescChars": 400,
+  "skillListingBudgetFraction": 0.005,
+  "autoCompactEnabled": true,
   "hooks": {
     "PostToolUse": [
       {

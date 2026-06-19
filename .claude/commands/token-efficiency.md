@@ -81,6 +81,18 @@ necessary.
 - Prefer a dedicated tool over `Bash` when one fits (`Read`, `Edit`,
   `Write`, `Grep`/search) — the dedicated tool is cheaper to render and
   easier for the user to approve.
+- **Extract the signal, don't dump output.** After a command runs, surface
+  only the essential result — pass/fail plus the key numbers/paths (e.g.
+  "60 examples, 0 failures · 100%"). Pipe to `grep`/`tail -n N` to pull just
+  that; don't `cat`/`tail` whole logs, build output, or full test runs once
+  the task is done. Show full output only when debugging a failure.
+
+## Context management
+
+- Run `/compact` when the conversation exceeds ~50 k tokens or after a turn that dumped a large file/diff into context. Don't wait until the harness auto-compacts — compacting earlier keeps the summary tighter.
+- After receiving a large tool result (full file read, long grep output), compact before the next multi-step task so the result doesn't bloat every subsequent turn.
+- Delegate broad fan-out reads to the **Explore** subagent: it burns its own context on file dumps and returns just the conclusion. Use it whenever you'd otherwise open more than 3 unrelated files.
+- Prefer `offset`/`limit` on Read over reading a whole file then discarding 90% — unread tokens still cost.
 
 ## Output cap
 

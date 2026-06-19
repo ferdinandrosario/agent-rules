@@ -12,6 +12,12 @@ here. This file adds only the Claude-Code-specific wiring.
   the matching skill in `.claude/skills/<dir>/SKILL.md`, which redirects
   to the canonical `<dir>/AGENTS.md` (`backend`, `web`, `mobile`,
   `docs`). Read that file before changing code in that tree.
+- **Language how-to skills.** Best-practice / how-to questions (not
+  directory edits) trigger `.claude/skills/<lang>/SKILL.md` — `rails`,
+  `ruby` (→ `backend/AGENTS.md`), `react` (→ `web/AGENTS.md`),
+  `react-native` (→ `mobile/AGENTS.md`). Each redirects to the same
+  canonical per-codebase ruleset; `stamp.sh` prunes a language skill
+  with its codebase.
 - **Enforcement hooks** (deterministic, Claude-only) are wired in
   [`.claude/settings.json`](.claude/settings.json) → `.claude/hooks/`:
   - `no-todo.sh` — `PostToolUse`, **blocks** a just-edited code file
@@ -21,6 +27,10 @@ here. This file adds only the Claude-Code-specific wiring.
     rule 5).
 - **Token-efficiency rules** (AGENTS.md rule 7) are spelled out in
   [`.claude/commands/token-efficiency.md`](.claude/commands/token-efficiency.md).
+  `.claude/settings.json` also sets token-saving knobs: `autoCompactEnabled`,
+  `skillListingMaxDescChars`/`skillListingBudgetFraction` (cap how much context
+  the skill listing burns), and a read-only `permissions.allow` list
+  (`Read`/`Grep`/`Glob` + read-only git) so safe lookups don't prompt.
 
 Other agents (Copilot, Codex, Cursor, …): see
 [`AGENTS.md`](AGENTS.md) "Agent-specific entry points" and
