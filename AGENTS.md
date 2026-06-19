@@ -74,6 +74,11 @@ docs/     → source of truth (UI stack: docs/feature/ui.md)
     forbids inventing a fact, rule 12 requires confirming the ones you
     state. (A hard-coded "eleven features" that drifts to thirteen is
     the failure this prevents.)
+13. **Validation — every feature validates at all three layers.** A
+    feature that accepts user input validates on the backend (model
+    validators are the source of truth), mirrors those rules inline on
+    each client, and guards every file attachment. See the VALIDATION
+    section below for the full statement.
 
 ## OUTPUT FORMAT (for substantive code changes)
 
@@ -187,6 +192,28 @@ Applies to every dependency, OS, and CI runner across `backend/`,
 Codebase-specific deltas (audit command, RN/Expo nightly bans,
 pinning mechanics) live in the matching `<codebase>/AGENTS.md`. Don't
 duplicate this universal block there.
+
+## VALIDATION (rule, every feature that takes user input)
+
+Validate at all three layers — never trust the client, never duplicate
+the rule's source of truth:
+
+- **Backend is the source of truth.** Model validators define the rule;
+  the API returns a structured validation error (a typed envelope with
+  per-field messages), never a bare 500. Controllers surface the model's
+  errors — they don't re-implement them.
+- **Clients mirror, inline.** Every client re-states the same rules for
+  fast feedback and renders errors **inline next to the field** (never a
+  toast/alert). Drive every client from one shared field schema so the
+  copy can't drift.
+- **Attachments are guarded.** Every upload is constrained by a max size
+  and a MIME allow-list at the model layer — an unguarded
+  `has_one_attached`/`has_many_attached` (or its client equivalent) is a
+  bug.
+
+The concrete mechanism (envelope shape, shared-schema name, the
+attachment validator) is per-app — record it in the matching
+`<codebase>/AGENTS.md` and the relevant `docs/` page.
 
 ## System-level installs (hand to the user)
 

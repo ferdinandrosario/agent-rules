@@ -5,8 +5,9 @@ project in one command — so every repo you start inherits the same
 conventions without you rewriting (or an AI re-deriving) them each time.
 
 Originally extracted from the `personal_manager` monorepo (2026-06-16);
-the design target is a Rails API + React Native (and optionally React web)
-SaaS app, but the universal rules are stack-agnostic.
+the design target is a Rails API + React web + React Native (Expo) SaaS
+monorepo — `backend` + `web` + `mobile` + `docs` — but the universal rules
+are stack-agnostic, and the web/mobile clients are each optional.
 
 ---
 
@@ -36,13 +37,16 @@ rules, the docs). The stamp does the core; you author the delta.
 
 | File | Role |
 |---|---|
-| `AGENTS.md` | Universal rules: ROLE, ABSOLUTE RULES 1–12, output/doc/test/version sections, forbidden list. **Single source of truth.** Ships the full `backend`+`web`+`mobile` superset; `stamp.sh` + the checklist prune what an app doesn't use. |
+| `AGENTS.md` | Universal rules: ROLE, ABSOLUTE RULES 1–13, output/doc/test/version/**validation** sections, forbidden list. **Single source of truth.** Ships the full `backend`+`web`+`mobile` superset; `stamp.sh` + the checklist prune what an app doesn't use. |
 | `CLAUDE.md` | Thin Claude wrapper: `@AGENTS.md` + skill/hook wiring. |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md` (backend, web, mobile, docs). |
+| `.claude/skills/<lang>/SKILL.md` | Language how-to skills — `rails`,`ruby`→`backend/AGENTS.md`, `react`→`web/AGENTS.md`, `react-native`→`mobile/AGENTS.md`. Pruned with their codebase. |
 | `.claude/hooks/no-todo.sh` | `PostToolUse` — **blocks** an edited code file containing a `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | `Stop` — **warns** when code changed but `docs/` didn't. |
-| `.claude/settings.json` | Wires the two hooks. |
+| `.claude/settings.json` | Wires the two hooks + token-saving knobs (`autoCompactEnabled`, skill-listing caps, read-only-tool allow-list). |
 | `.claude/commands/token-efficiency.md` | Token rules (AGENTS.md rule 7). |
+| `.github/copilot-instructions.md` | GitHub Copilot entry point — points to `AGENTS.md` + lists the per-dir instruction files. |
+| `.github/instructions/<dir>.instructions.md` | Copilot path-scoped (`applyTo:`) pointers to each `<dir>/AGENTS.md` (backend, web, mobile, docs). Pruned with their codebase. |
 | `stamp.sh` | Bootstraps a new repo from this core (see below). |
 
 ## What you author per project (the delta — NOT in here)
@@ -63,30 +67,42 @@ rules, the docs). The stamp does the core; you author the delta.
 
 ```sh
 ./stamp.sh "<APP>" [codebase ...]
-# codebases default to:  backend mobile docs   (i.e. no web)
-# Rails + React Native:  ./stamp.sh "/path/to/New App"
-# add a web client:      ./stamp.sh "/path/to/New App" backend web mobile docs
+# backend + docs are mandatory (always kept); web + mobile are selectable.
+# Default (no args) = the full structure: backend web mobile docs
+./stamp.sh "/path/to/New App"            # backend web mobile docs (full)
+./stamp.sh "/path/to/New App" mobile     # backend mobile docs (no web)
+./stamp.sh "/path/to/New App" web        # backend web docs (no mobile)
 ```
 
 (The local working copy at `~/.claude/templates/agent-rules/stamp.sh` works
 identically — see "Keeping copies in sync" below.)
 
-Expected output (default codebases):
+Expected output (default — full structure, nothing pruned):
+
+```
+✔ copied template core into <APP>
+✔ docs-with-code.sh now watches: backend|web|mobile
+────────────────────────────────────────────────────────────────────
+Mechanical stamp done. Author the rest by hand …
+```
+
+Omitting a client prunes it cleanly — e.g. `./stamp.sh "<APP>" mobile`:
 
 ```
 ✔ copied template core into <APP>
 ✔ pruned skill: web
+✔ pruned skill: react
+✔ pruned Copilot instructions: web
 ✔ docs-with-code.sh now watches: backend|mobile
-────────────────────────────────────────────────────────────────────
-Mechanical stamp done. Author the rest by hand …
 ```
 
 The script **refuses to run if `<APP>/AGENTS.md` already exists**, so a
 stamped repo can't be clobbered.
 
 **What the script does (deterministic):** copies the core, deletes its own
-`README.md`/`stamp.sh` from the target, removes the skill dir for each pruned
-codebase, and rewrites the `docs-with-code.sh` watch list.
+`README.md`/`stamp.sh` from the target, removes each pruned codebase's skill
+dir (its language how-to skills + Copilot instruction file too), and rewrites
+the `docs-with-code.sh` watch list.
 
 **What you author by hand (needs judgment — the script lists these):**
 
@@ -97,6 +113,34 @@ codebase, and rewrites the `docs-with-code.sh` watch list.
    skeleton (copy from an existing app and adjust).
 4. **`docs/`** — `docs/AGENTS.md` you author up front; the numbered `00-09`
    pages land same-turn with the code they document.
+
+---
+
+## Create a new project — pick your codebases
+
+`backend` and `docs` always ship. Choose **web**, **mobile**, or both. Each
+codebase you keep brings its Claude skills, its Copilot pointer, and a slot
+for its `<dir>/AGENTS.md`:
+
+| Codebase | Kept | Claude skills | Copilot pointer | You author |
+|---|---|---|---|---|
+| `backend` | always | `backend`, `rails`, `ruby` | `instructions/backend.instructions.md` | `backend/AGENTS.md` |
+| `web` | selectable | `web`, `react` | `instructions/web.instructions.md` | `web/AGENTS.md` |
+| `mobile` | selectable | `mobile`, `react-native` | `instructions/mobile.instructions.md` | `mobile/AGENTS.md` |
+| `docs` | always | `docs` | `instructions/docs.instructions.md` | `docs/AGENTS.md` |
+
+Pick the combination by listing the clients you want (backend + docs are added
+automatically):
+
+| You're building | Command | Result |
+|---|---|---|
+| API + web + mobile (full) | `./stamp.sh "<APP>"` | all 8 skills, 4 Copilot pointers |
+| API + mobile only | `./stamp.sh "<APP>" mobile` | drops `web` + `react` |
+| API + web only | `./stamp.sh "<APP>" web` | drops `mobile` + `react-native` |
+| API only (no client) | `./stamp.sh "<APP>" backend` | drops both clients |
+
+Each kept codebase's skills redirect to its `<dir>/AGENTS.md`, so after
+stamping your only per-codebase authoring is filling those files in.
 
 ---
 
@@ -119,8 +163,10 @@ Quick local check that the Claude wiring fires after stamping:
 
 ## Keeping copies in sync
 
-This repo and the local copy at `~/.claude/templates/agent-rules/` are the
-same files. Pick **one** as canonical to avoid drift:
+This repo and the local copy at `~/.claude/templates/agent-rules/` share the
+same **core** (`AGENTS.md`, `CLAUDE.md`, `.claude/`, `.github/`, `stamp.sh`) —
+only this `README.md` differs (it's framed for the public repo). Pick **one**
+as canonical to avoid drift:
 
 - **This repo as canonical:** clone it, run `stamp.sh` from the clone, and
   point your local copy at it (or just `git pull` the clone).
