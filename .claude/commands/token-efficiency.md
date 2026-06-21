@@ -50,6 +50,21 @@ necessary.
   command (`AGENTS.md` rule 8).
 - **Exempt — run autonomously:** staging by exact path and `commit` on
   the local branch (`AGENTS.md` rule 8).
+- **Force-push is never covered by a general "push."** `git push --force` /
+  `--force-with-lease` needs its own explicit, force-specific go-ahead in that
+  turn. When a rebase would otherwise need a force-push to an already-published
+  branch, `git revert` the redundant commits instead so the push stays a
+  fast-forward, or ask.
+- **Integrate by rebase, never merge.** Rebase feature branches onto an
+  up-to-date `main`; PRs land as "Rebase and merge" only.
+- **Keep local `main` synced.** `git fetch` + fast-forward `main` to
+  `origin/main` before branching, rebasing, or cherry-picking — local `main`
+  is often behind.
+- **Drop a commit already on `main`.** Rebase auto-skips it ("skipped
+  previously applied commit"); when force-push isn't allowed, `git revert` it
+  on the branch instead.
+- **Branch names:** `<type>/<kebab-desc>` using Conventional-Commit types
+  (`feat/`, `fix/`, `docs/`, `chore/`, …).
 - **Read-only git is free to run** without asking: `status`, `diff`,
   `log`, `show`, `branch` (list), `remote -v`.
 - Don't run `git status` before a commit unless the working tree is

@@ -43,16 +43,25 @@ docs/     → source of truth (UI stack: docs/feature/ui.md)
 7. **Token efficiency** — apply the rules in
    `.claude/commands/token-efficiency.md` to every response (terse
    output, targeted edits, lean git ops, batched tool calls).
-8. **Git — confirm before acting.** Mutating / remote-visible git
-   needs explicit per-invocation user confirmation. `commit` is
-   exempt — agents may stage (by exact path) and commit on the local
-   branch autonomously. An explicit instruction in the task itself
-   ("push this", "open a PR") counts as the per-invocation
+8. **Git — confirm before acting; rebase-based workflow.** Mutating /
+   remote-visible git needs explicit per-invocation user confirmation.
+   `commit` is exempt — agents may stage (by exact path) and commit on
+   the local branch autonomously. An explicit instruction in the task
+   itself ("push this", "open a PR") counts as the per-invocation
    confirmation for that command — this is how remote / CI sessions
-   work, where the user cannot confirm interactively. **PR merges
-   always use "Rebase and merge"** — linear history; never a merge
-   commit, never squash. Past approval does not carry over. Full
-   command list in `.claude/commands/token-efficiency.md`.
+   work, where the user cannot confirm interactively. **Force-push
+   (`--force`/`--force-with-lease`) is the exception: a general "push"
+   never authorizes it** — force only on an explicit, force-specific
+   instruction; otherwise `revert` redundant commits so the push stays
+   a fast-forward. **Integrate by rebase, never merge** — PR merges
+   always use "Rebase and merge" (linear history; never a merge commit,
+   never squash). **Keep local `main` fast-forwarded from `origin/main`**
+   before branching/rebasing, and **drop a commit whose changes are
+   already on `main`** (rebase auto-skips it, or revert when force isn't
+   allowed). **Branch names:** `<type>/<kebab-desc>` with
+   Conventional-Commit types (`feat/`, `fix/`, `docs/`, `chore/`, …).
+   Past approval does not carry over. Full command list in
+   `.claude/commands/token-efficiency.md`.
 9. **Test coverage — 100% target, 90% floor (backend: 100% mandatory).**
    See the TEST COVERAGE section below for the full statement.
 10. **Version & stability — latest stable first (except the OS: latest
