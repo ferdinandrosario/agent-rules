@@ -95,8 +95,10 @@ Mechanical stamp done. Author the rest by hand (these need judgment):
                   convention skeleton. Quickest start: copy the matching
                   file from an existing app and adjust, e.g.
                   cp ~/Downloads/Fleet\\ Management/backend/AGENTS.md "$APP/backend/"
-  ☐ docs/AGENTS.md is included; numbered docs/00-09 pages are written
-                  same-turn as the code they document (rule 5), not upfront.
+  ☐ docs/AGENTS.md — author it too (NOT shipped; .claude/skills/docs/
+                  SKILL.md redirects to it). Numbered docs/00-09 pages are
+                  written same-turn as the code they document (rule 5),
+                  not upfront.
 
 Verify when done:
   grep -q '^@AGENTS.md' "$APP/CLAUDE.md" && echo "  ✔ CLAUDE imports AGENTS"
