@@ -61,7 +61,8 @@ docs/     → source of truth (UI stack: docs/feature/ui.md)
    allowed). **Branch names:** `<type>/<kebab-desc>` with
    Conventional-Commit types (`feat/`, `fix/`, `docs/`, `chore/`, …).
    Past approval does not carry over. Full command list in
-   `.claude/commands/token-efficiency.md`.
+   `.claude/commands/token-efficiency.md`. Operational detail + the
+   rename ritual: see the Git workflow section below.
 9. **Test coverage — 100% target, 90% floor (backend: 100% mandatory).**
    See the TEST COVERAGE section below for the full statement.
 10. **Version & stability — latest stable first (except the OS: latest
@@ -224,6 +225,27 @@ The concrete mechanism (envelope shape, shared-schema name, the
 attachment validator) is per-app — record it in the matching
 `<codebase>/AGENTS.md` and the relevant `docs/` page.
 
+## Git workflow
+
+Operational detail for ABSOLUTE RULE 8 (which governs *when* a git command needs confirmation). The workflow itself:
+
+- **One branch per change:** `<type>/<kebab-desc>`, Conventional-Commit type (`feat/ fix/ docs/ chore/ refactor/ …`).
+- **Rebase, never merge.** `git pull --rebase` (`pull.rebase=true`); keep local `main` fast-forwarded from `origin/main` before branching or rebasing.
+- **Atomic commits.** One commit = one logical change with everything it needs to stay self-consistent and bisectable. A **file rename is the `git mv` plus every reference update, together in one commit**.
+- **Conventional Commit subjects:** `refactor: rename OLD -> NEW`, `docs: …`, `feat(scope): …`.
+- **Renames use `git mv` only** — never delete + recreate (keeps history and the executable bit). Prove zero orphaned references with `git grep` before committing; full ritual in [`NAMING-CONVENTIONS.md`](NAMING-CONVENTIONS.md) "Renaming an existing file".
+- **Force-push:** `--force-with-lease` only, on your own feature branch only, only on an explicit force instruction — never shared history.
+
+## Naming conventions
+
+Full reference: [`NAMING-CONVENTIONS.md`](NAMING-CONVENTIONS.md). The rules:
+
+- **Scripts** — lowercase `kebab-case`, **verb-first**, the verb encoding lifecycle: run-once (`provision-` create cloud infra · `bootstrap-` configure a fresh host · `setup-` install deps) vs runtime (`deploy-` ship a release · `run-` foreground · `start-` background · `build-`/`backup-`/`check-`).
+- **Name the target** — env (`-production`/`-staging`/`-local`) + platform (`-aws`/`-ubuntu`/…) + topology (`-single-vm`/`-containers`/`-nginx`/`-foreground`) — and **only what the script truly needs** (a VM-agnostic installer is `bootstrap-single-vm.sh`, not `bootstrap-ec2.sh`).
+- **One concept = one word** — `digitalocean` not `do`; `single-vm` not `single`/`single-box`; `provision-` = create a box, `bootstrap-` = configure a box. No abbreviation a newcomer wouldn't know (only `aws db vm ssh tls api ip ci cd pg`).
+- **Markdown** — lowercase `kebab-case`, except all-caps landmark files (`README` `CONTRIBUTING` `AGENTS` `CLAUDE` `SKILL` `NAMING-CONVENTIONS`, `CODEOWNERS`) and tool-mandated names (`*.instructions.md`, `pull_request_template.md`). A script and its dedicated runbook doc share the same stem and are renamed together.
+- The `repo-naming` skill (`.claude/skills/repo-naming/`) runs the audit → propose → `git mv` → verify process.
+
 ## System-level installs (hand to the user)
 
 When a task needs a **system / OS package** — Homebrew (`brew install …`),
@@ -290,3 +312,4 @@ the PR description even when you don't fix it in the same change.
 - Process orchestrators (overmind, foreman, concurrently). Four terminals
   is the deliberate choice — see `docs/05-running-locally.md`.
 - Comments restating *what* the code does. Comments explain *why* only.
+- `snake_case`/`camelCase` script filenames, or a script-name verb outside the Naming conventions vocabulary.

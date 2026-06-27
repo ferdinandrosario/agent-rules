@@ -1,7 +1,7 @@
 # agent-rules template
 
 Frozen snapshot of the **project-agnostic** AI-agent ruleset (universal
-`AGENTS.md` rules, `CLAUDE.md` wiring, the `.claude/` skills + hooks +
+`AGENTS.md` rules, `CLAUDE.md` wiring, the naming convention, the `.claude/` skills + hooks +
 token-efficiency command, and the `.github/` Copilot pointers). Originated
 from `personal_manager` (2026-06-16). Cross-agent: Claude Code, Copilot,
 Codex, Cursor, … all read the files this drops into the repo.
@@ -17,8 +17,10 @@ when a universal rule earns a permanent change.
 |---|---|
 | `AGENTS.md` | Universal rules: ROLE, ABSOLUTE RULES 1–13, output/doc/test/version/**validation** sections, forbidden list. **Single source of truth.** |
 | `CLAUDE.md` | Thin Claude wrapper: `@AGENTS.md` + skill/hook wiring. |
+| `NAMING-CONVENTIONS.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |
 | `.claude/skills/<lang>/SKILL.md` | Language how-to skills — `rails`,`ruby`→`backend/AGENTS.md`, `react`→`web/AGENTS.md`, `react-native`→`mobile/AGENTS.md`. Pruned with their codebase. |
+| `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `NAMING-CONVENTIONS.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | Stop — **warns** when code changed but `docs/` didn't. |
 | `.claude/settings.json` | Wires the two hooks + token-saving knobs (`autoCompactEnabled`, skill-listing caps, read-only-tool allow-list). |
