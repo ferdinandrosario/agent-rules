@@ -243,6 +243,15 @@ the agent's job** — `Gemfile` + `bundle install`, `package.json` + `npm i`.
 The test: *does it mutate the machine/OS or the repo?* Machine/OS → hand it
 to the user.
 
+## Skill sync
+
+The `.claude/skills/` here are the shared core that the apps built from
+this template also carry. Skills are the **one exception to
+copy-then-diverge**: when a shared skill changes in any copy, make the
+same change in this template and those apps in the same turn, so they
+never drift. App-specific rules (`AGENTS.md`, `<dir>/AGENTS.md`) still
+diverge freely.
+
 ## Per-codebase rules (nearest `AGENTS.md` wins)
 
 Each codebase has its own `AGENTS.md` with rules that apply only there.
