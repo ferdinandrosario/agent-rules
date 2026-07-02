@@ -5,6 +5,14 @@ description: Use for idiomatic Ruby best-practice/how-to questions in this repo 
 
 # Ruby — idiomatic (this repo)
 
-The canonical ruleset is [`../../../backend/AGENTS.md`](../../../backend/AGENTS.md) — stack, version delta, layer rules, approved gems, API contract, folder layout, commands, env vars.
+For **general, idiomatic Ruby best practices** that apply across all of
+Ferdy's apps, see the user-level `ruby` skill at
+[`/Users/ferdy/.claude/skills/ruby/SKILL.md`](/Users/ferdy/.claude/skills/ruby/SKILL.md)
+— naming, blocks/enumerables, error handling, value objects, gem/test conventions.
+
+For **this project's binding rules** (stack, version delta, layer rules,
+approved gems/libraries, API contract, folder layout, commands, env vars),
+read [`../../../backend/AGENTS.md`](../../../backend/AGENTS.md) — it is the single source of truth and
+**overrides** the general best-practice skill on any conflict.
 
 Universal rules: [`AGENTS.md`](../../../AGENTS.md).

@@ -14,10 +14,12 @@ here. This file adds only the Claude-Code-specific wiring.
   `docs`). Read that file before changing code in that tree.
 - **Language how-to skills.** Best-practice / how-to questions (not
   directory edits) trigger `.claude/skills/<lang>/SKILL.md` — `rails`,
-  `ruby` (→ `backend/AGENTS.md`), `react` (→ `web/AGENTS.md`),
-  `react-native` (→ `mobile/AGENTS.md`). Each redirects to the same
-  canonical per-codebase ruleset; `stamp.sh` prunes a language skill
-  with its codebase.
+  `ruby`, `react`, `react-native`. Each is **two-layer**: the user-level
+  generic skill (`~/.claude/skills/<lang>/`, deployed from this repo's
+  `user-skills/`) carries the cross-app idioms, and the matching
+  `<dir>/AGENTS.md` (`backend`/`web`/`mobile`) is the binding ruleset
+  that **overrides** it on any conflict. `stamp.sh` prunes a language
+  skill with its codebase.
 - **Enforcement hooks** (deterministic, Claude-only) are wired in
   [`.claude/settings.json`](.claude/settings.json) → `.claude/hooks/`:
   - `no-todo.sh` — `PostToolUse`, **blocks** a just-edited code file
