@@ -96,9 +96,12 @@ Mechanical stamp done. Author the rest by hand (these need judgment):
                   file from an existing app and adjust, e.g.
                   cp ~/Downloads/Fleet\\ Management/backend/AGENTS.md "$APP/backend/"
   ☐ docs/AGENTS.md — author it too (NOT shipped; .claude/skills/docs/
-                  SKILL.md redirects to it). Numbered docs/00-09 pages are
+                  SKILL.md redirects to it). Numbered docs/00-10 pages are
                   written same-turn as the code they document (rule 5),
-                  not upfront.
+                  not upfront. Same for the rest of the standard layout
+                  (AGENTS.md "DOCUMENTATION"): docs/feature/<name>.md per
+                  feature, FEATURES.md, CONTRIBUTING.md, todo.md; add
+                  playbooks/ + archive/ as passes and reports accrue.
 
 Verify when done:
   grep -q '^@AGENTS.md' "$APP/CLAUDE.md" && echo "  ✔ CLAUDE imports AGENTS"

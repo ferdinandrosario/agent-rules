@@ -90,18 +90,11 @@ docs/     → source of truth (UI stack: docs/feature/ui.md)
     each client, and guards every file attachment. See the VALIDATION
     section below for the full statement.
 
-## OUTPUT FORMAT (for substantive code changes)
+## OUTPUT FORMAT
 
-Use these sections **when a response delivers or modifies code.** For
-questions, lookups, and one-line fixes, skip the scaffolding and follow
-the terse rules in `.claude/commands/token-efficiency.md` instead — a
-trivial answer wearing five headers is the waste rule 7 forbids.
-
-1. **ASSUMPTIONS**
-2. **DESIGN DECISIONS**
-3. **IMPLEMENTATION**
-4. **DOCUMENTATION UPDATES**
-5. **VERIFICATION STEPS**
+State non-obvious assumptions and decisions inline, only when they'd
+surprise a reviewer. No section headers. No closing summary. The diff is
+the report. (Terse-output detail: `.claude/commands/token-efficiency.md`.)
 
 ## DOCUMENTATION (required on every change)
 
@@ -113,10 +106,21 @@ Include exact commands, file paths, and expected outputs.
 
 (Precise · concise · complete — the test in rule 11 above.)
 
-`docs/` is the source of truth, numbered `00`–`10` plus per-feature
-canonical files under `docs/feature/` (`feature/auth.md`,
-`feature/ui.md`, `feature/task-planner.md`, …) and `FEATURES.md`. If
-code and docs disagree, fix it in the same change. Change history
+`docs/` is the source of truth. Standard layout, authored as the app
+grows (pages land same-turn as the code they document — rule 5):
+
+- numbered `00`–`10` — the linear top-to-bottom guide (don't renumber);
+- `docs/feature/<feature>.md` — per-feature canonical references
+  (`feature/auth.md`, `feature/ui.md`, …);
+- `FEATURES.md` — one bullet per surface, the feature inventory;
+- `CONTRIBUTING.md` — the feature-doc checklist every PR runs;
+- `todo.md` — deferred ideas/suggestions (see the Todo section below);
+- `playbooks/` — re-runnable maintenance passes (each bundles the prompt
+  to paste, commands with expected output, and an adapt-over-time note);
+- `archive/` — dated point-in-time reports, frozen at write time; never
+  edited — a wrong one is superseded by a new report.
+
+If code and docs disagree, fix it in the same change. Change history
 lives in git — write commit messages that carry the *why*. Full
 feature-doc checklist:
 [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
@@ -265,6 +269,15 @@ the agent's job** — `Gemfile` + `bundle install`, `package.json` + `npm i`.
 The test: *does it mutate the machine/OS or the repo?* Machine/OS → hand it
 to the user.
 
+## Remembered knowledge
+
+When the user asks the agent to *remember* something, record it in the
+fitting repo file — never only in an agent's private memory. Route by
+kind: a rule/convention → this `AGENTS.md` (or the nearest
+`<codebase>/AGENTS.md`); feature behavior → the matching `docs/` page;
+codebase how-to → the relevant `.claude/skills/<dir>/SKILL.md`. Unsure
+which file? Confirm the plan before writing.
+
 ## Skill sync
 
 The `.claude/skills/` here are the shared core that the apps built from
@@ -273,6 +286,17 @@ copy-then-diverge**: when a shared skill changes in any copy, make the
 same change in this template and those apps in the same turn, so they
 never drift. App-specific rules (`AGENTS.md`, `<dir>/AGENTS.md`) still
 diverge freely.
+
+## Todo
+
+Don't drop an out-of-scope idea. When you raise a suggestion or follow-up
+that shouldn't bloat the current change, offer to park it in
+[`docs/todo.md`](docs/todo.md); on the user's go-ahead — or whenever they
+say "todo it" or run `/todo` — append an entry in that file's format. Never
+silently lose a flagged suggestion. This is the sanctioned home for "later"
+work: instead of a `TODO`/`FIXME` code comment (banned under "Universal
+forbidden"), add it here. Genuinely tracked, scheduled work still goes to
+GitHub issues.
 
 ## Per-codebase rules (nearest `AGENTS.md` wins)
 
@@ -317,7 +341,8 @@ the PR description even when you don't fix it in the same change.
   their own commit even within one PR.
 - Adding any dependency without a one-paragraph justification in the PR
   (what it does, why a stdlib/framework version doesn't cut it, version pin).
-- `// TODO:` / `# TODO:` comments in any language. File an issue or do it now.
+- `// TODO:` / `# TODO:` comments in any language. Park it in
+  `docs/todo.md` (see Todo above), file an issue, or do it now.
 - Process orchestrators (overmind, foreman, concurrently). Four terminals
   is the deliberate choice — see `docs/05-running-locally.md`.
 - Comments restating *what* the code does. Comments explain *why* only.
