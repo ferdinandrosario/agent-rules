@@ -5,6 +5,14 @@ description: Use for idiomatic React Native (Expo) best-practice/how-to question
 
 # React Native — idiomatic (this repo)
 
-The canonical ruleset is [`../../../mobile/AGENTS.md`](../../../mobile/AGENTS.md) — stack, version delta, layer rules, approved libraries, API contract, folder layout, commands, env vars, MSW/jest-expo gotchas.
+For **general, idiomatic React Native best practices** that apply across all of
+Ferdy's apps, see the user-level `react-native` skill at
+[`/Users/ferdy/.claude/skills/react-native/SKILL.md`](/Users/ferdy/.claude/skills/react-native/SKILL.md)
+— components/hooks, navigation, lists/performance, styling, async/data, testing.
+
+For **this project's binding rules** (stack, version delta, layer rules,
+approved gems/libraries, API contract, folder layout, commands, env vars),
+read [`../../../mobile/AGENTS.md`](../../../mobile/AGENTS.md) — it is the single source of truth and
+**overrides** the general best-practice skill on any conflict.
 
 Universal rules: [`AGENTS.md`](../../../AGENTS.md).
