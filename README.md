@@ -19,7 +19,8 @@ when a universal rule earns a permanent change.
 | `CLAUDE.md` | Thin Claude wrapper: `@AGENTS.md` + skill/hook wiring. |
 | `NAMING-CONVENTIONS.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |
-| `.claude/skills/<lang>/SKILL.md` | Language how-to skills — `rails`,`ruby`→`backend/AGENTS.md`, `react`→`web/AGENTS.md`, `react-native`→`mobile/AGENTS.md`. Pruned with their codebase. |
+| `.claude/skills/<lang>/SKILL.md` | Language how-to skills (`rails` `ruby` `react` `react-native`) — two-layer pointers: the user-level generic skill (`~/.claude/skills/<lang>/`, deployed from `user-skills/`) for cross-app idioms, and the matching `<dir>/AGENTS.md` as the binding override on any conflict. Pruned with their codebase. |
+| `user-skills/<lang>/SKILL.md` | **Canonical source of the four user-level generic skills** (layered best practices, beginner → staff). Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
 | `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `NAMING-CONVENTIONS.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | Stop — **warns** when code changed but `docs/` didn't. |
@@ -34,6 +35,22 @@ when a universal rule earns a permanent change.
   `docs/AGENTS.md`: the per-codebase rulesets the SKILL redirects point at.
 - `docs/` skeleton — at minimum the four pages `docs-with-code.sh` names:
   setup · architecture · running · troubleshooting.
+
+## User-level generic skills (`user-skills/` → `~/.claude/skills/`)
+
+The four language skills every repo's thin pointers reference live here so
+they are versioned; the live copies Claude actually loads sit in
+`~/.claude/skills/`. After editing one under `user-skills/`, deploy it:
+
+```sh
+cp -R ~/Downloads/agent-rules/user-skills/. ~/.claude/skills/
+diff -rq ~/Downloads/agent-rules/user-skills ~/.claude/skills | grep -v "Only in $HOME/.claude/skills"
+# expected: no output — every versioned skill matches its deployed copy
+# (repo-naming lives only in ~/.claude/skills + per-repo, hence the grep -v)
+```
+
+Edit in this repo first, then deploy — never edit `~/.claude/skills/`
+directly, or the change is unversioned and dies with the machine.
 
 ## Stamp a new repo
 
@@ -71,8 +88,10 @@ the `docs-with-code.sh` watch list.
 3. **`<dir>/AGENTS.md`** for each kept code codebase — port the convention
    skeleton. Quickest start is to copy the matching file from an existing
    app (`personal_manager`, `Fleet Management`) and adjust.
-4. **`docs/`** — `docs/AGENTS.md` is included; the numbered `00-09` pages are
-   written same-turn as the code they document (rule 5), not upfront.
+4. **`docs/`** — author `docs/AGENTS.md` too (not shipped); the numbered
+   `00-10` pages and the rest of the standard layout (see `AGENTS.md`
+   "DOCUMENTATION") are written same-turn as the code they document
+   (rule 5), not upfront.
 
 ## Verify the wiring fires
 
