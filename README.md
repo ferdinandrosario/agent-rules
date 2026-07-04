@@ -20,8 +20,9 @@ when a universal rule earns a permanent change.
 | `NAMING-CONVENTIONS.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |
 | `.claude/skills/<lang>/SKILL.md` | Language how-to skills (`rails` `ruby` `react` `react-native`) — two-layer pointers: the user-level generic skill (`~/.claude/skills/<lang>/`, deployed from `user-skills/`) for cross-app idioms, and the matching `<dir>/AGENTS.md` as the binding override on any conflict. Pruned with their codebase. |
-| `user-skills/<lang>/SKILL.md` | **Canonical source of the four user-level generic skills** (layered best practices, beginner → staff). Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
+| `user-skills/<skill>/SKILL.md` | **Canonical source of the user-level generic skills** — the four language skills (layered best practices, beginner → staff) plus the `drift-audit` process skill. Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
 | `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `NAMING-CONVENTIONS.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
+| `.claude/skills/drift-audit/SKILL.md` | Thin pointer to the user-level `drift-audit` skill — report-first audit of docs/scripts/skills vs reality (findings table → STOP → fix approved items). Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | Stop — **warns** when code changed but `docs/` didn't. |
 | `.claude/settings.json` | Wires the two hooks + token-saving knobs (`autoCompactEnabled`, skill-listing caps, read-only-tool allow-list). |
@@ -38,9 +39,10 @@ when a universal rule earns a permanent change.
 
 ## User-level generic skills (`user-skills/` → `~/.claude/skills/`)
 
-The four language skills every repo's thin pointers reference live here so
-they are versioned; the live copies Claude actually loads sit in
-`~/.claude/skills/`. After editing one under `user-skills/`, deploy it:
+The generic skills every repo's thin pointers reference — the four
+language skills plus `drift-audit` — live here so they are versioned; the
+live copies Claude actually loads sit in `~/.claude/skills/`. After
+editing one under `user-skills/`, deploy it:
 
 ```sh
 cp -R ~/Downloads/agent-rules/user-skills/. ~/.claude/skills/

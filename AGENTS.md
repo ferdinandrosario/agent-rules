@@ -125,6 +125,10 @@ lives in git — write commit messages that carry the *why*. Full
 feature-doc checklist:
 [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
+Suspect docs, scripts, or skills have drifted from the code? The
+`drift-audit` skill (`.claude/skills/drift-audit/`) runs the report-first
+audit → findings table → **STOP** → approved-fixes process.
+
 ## TEST COVERAGE (rule, every codebase)
 
 **Target: 100%** on every dimension the coverage tool measures
