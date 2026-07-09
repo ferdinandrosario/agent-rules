@@ -1,10 +1,14 @@
 # agent-rules template
 
-Frozen snapshot of the **project-agnostic** AI-agent ruleset (universal
-`AGENTS.md` rules, `CLAUDE.md` wiring, the naming convention, the `.claude/` skills + hooks +
-token-efficiency command, and the `.github/` Copilot pointers). Originated
-from `personal_manager` (2026-06-16). Cross-agent: Claude Code, Copilot,
-Codex, Cursor, … all read the files this drops into the repo.
+Frozen snapshot of the **project-agnostic** app scaffold: the AI-agent
+ruleset (universal `AGENTS.md` rules, `CLAUDE.md` wiring, the naming
+convention, the `.claude/` skills + hooks + token-efficiency command, the
+`.github/` Copilot pointers), the CI suite (per-codebase workflows,
+docs-links, agents-pointers, secrets-guard, Dependabot, PR template,
+CODEOWNERS), the `Makefile` test front door, `scripts/check-doc-links.rb`,
+and the shipped `docs/` pages. Originated from `personal_manager`
+(2026-06-16). Cross-agent: Claude Code, Copilot, Codex, Cursor, … all
+read the files this drops into the repo.
 
 This is a **snapshot, not a live link** — stamping copies these files into
 the new repo, which then diverges freely. Edits here do **not** propagate to
@@ -28,14 +32,24 @@ when a universal rule earns a permanent change.
 | `.claude/settings.json` | Wires the two hooks + token-saving knobs (`autoCompactEnabled`, skill-listing caps, read-only-tool allow-list). |
 | `.claude/commands/token-efficiency.md` | Token rules (AGENTS.md rule 7). |
 | `.github/copilot-instructions.md` + `.github/instructions/<dir>.instructions.md` | GitHub Copilot pointers — root stub + path-scoped (`applyTo:`) redirects to each `<dir>/AGENTS.md`. Pruned with their codebase. |
+| `.github/workflows/` | The CI suite: per-codebase CI (`backend.yml`, `web.yml`, `mobile.yml` — pruned with their codebase), `docs-links.yml` (runs the doc checker), `agents-pointers.yml` (pointer integrity), `secrets-guard.yml` (no tracked secrets). App-code workflows carry a template-only `if:` guard so they skip on this repo; `stamp.sh` strips it. |
+| `.github/dependabot.yml` | Weekly dependency PRs for bundler + npm + github-actions; `<web>`/`<mobile>` marker comments let `stamp.sh` prune entries with their codebase. |
+| `.github/pull_request_template.md` + `.github/CODEOWNERS` | The PR checklist that mirrors AGENTS.md's rules, and the catch-all review owner. |
+| `Makefile` | Uniform test front door (`make test`, `make test-<codebase>`, `make test-coverage`); pruned targets follow their codebase. |
+| `scripts/check-doc-links.rb` | Broken-link + orphan check over tracked markdown (run by `docs-links.yml`). Ships with `ORPHAN_ROOTS` = `docs/README.md` and an `AUTHORED_PER_APP` allowlist for the four per-app `AGENTS.md` targets. |
+| `docs/` (shipped pages) | `README.md` (topic-folder index), `CONTRIBUTING.md` (feature-doc checklist), `todo.md`, `development/ai-agents.md`, `development/naming-conventions.md`, `development/github-actions.md`. Everything else is authored as the app grows. |
 
 ## What's project-specific (author fresh per repo, NOT here)
 
 - `AGENTS.md` → the `## STACK` block (exact pinned versions).
 - `<dir>/AGENTS.md` — `backend/AGENTS.md`, `mobile/AGENTS.md`, `web/AGENTS.md`,
   `docs/AGENTS.md`: the per-codebase rulesets the SKILL redirects point at.
-- `docs/` skeleton — at minimum the four pages `docs-with-code.sh` names:
-  setup · architecture · running · troubleshooting.
+- `docs/` topic pages beyond the shipped ones — at minimum the four areas
+  `docs-with-code.sh` names: setup · architecture · running ·
+  troubleshooting; the full layout is indexed in `docs/README.md`.
+- Deploy / CD workflows — deployment is per-app infrastructure (target
+  host, container platform, secrets model); author them when the deploy
+  story exists.
 
 ## User-level generic skills (`user-skills/` → `~/.claude/skills/`)
 
@@ -71,16 +85,21 @@ authoring checklist. `<APP>` = the new repo's absolute path.
 Expected (default — full structure, nothing pruned):
 ```
 ✔ copied template core into <APP>
+✔ stripped template-only CI guards
+✔ cleaned Dependabot prune markers
 ✔ docs-with-code.sh now watches: backend|web|mobile
 ```
-…followed by the checklist below. Omitting a client prunes its skill +
-Copilot files. The script refuses to run if `<APP>/AGENTS.md` already
-exists, so a stamped repo can't be clobbered.
+…followed by the checklist below. Omitting a client also prints a `✔ pruned`
+line each for its skill, Copilot instructions, CI workflow, Dependabot
+entry, and Makefile targets. The script refuses to run if `<APP>/AGENTS.md`
+already exists, so a stamped repo can't be clobbered.
 
-**What the script does (deterministic):** copies the core, deletes its own
-`README.md`/`stamp.sh` from the target, removes each pruned codebase's skill
-dir (its language how-to skills + Copilot instruction file too), and rewrites
-the `docs-with-code.sh` watch list.
+**What the script does (deterministic):** copies the core; deletes the
+template-only files (`README.md`, `stamp.sh`) and dirs (`.git`,
+`user-skills/`) from the target; removes each pruned codebase's skill dir
+(its language how-to skills + Copilot instruction file too), CI workflow,
+Dependabot entry, and Makefile targets; strips the template-only CI guard
+lines; and rewrites the `docs-with-code.sh` watch list.
 
 **What you author by hand (needs judgment — the script lists these):**
 
@@ -90,9 +109,9 @@ the `docs-with-code.sh` watch list.
 3. **`<dir>/AGENTS.md`** for each kept code codebase — port the convention
    skeleton. Quickest start is to copy the matching file from an existing
    app (`personal_manager`, `Fleet Management`) and adjust.
-4. **`docs/`** — author `docs/AGENTS.md` too (not shipped); the numbered
-   `00-10` pages and the rest of the standard layout (see `AGENTS.md`
-   "DOCUMENTATION") are written same-turn as the code they document
+4. **`docs/`** — author `docs/AGENTS.md` too (not shipped); the topic-folder
+   pages beyond the shipped ones (see `AGENTS.md` "DOCUMENTATION" and the
+   `docs/README.md` index) are written same-turn as the code they document
    (rule 5), not upfront.
 
 ## Verify the wiring fires
