@@ -1,0 +1,137 @@
+name: Backend CI
+
+# Per-codebase workflow. Triggers only when files under backend/ change
+# (or this workflow file itself). A web-only or mobile-only change does
+# not spin up these runners.
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '!backend/**/*.md'
+      - '.github/workflows/backend.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '!backend/**/*.md'
+      - '.github/workflows/backend.yml'
+
+# Cancel superseded runs on the same PR branch. Never cancel on main —
+# the Phase 3 CD workflow will gate on the head commit's run finishing.
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    env:
+      RUBOCOP_CACHE_ROOT: tmp/rubocop
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: backend
+
+      - name: Cache RuboCop
+        uses: actions/cache@v6
+        env:
+          DEPS_HASH: ${{ hashFiles('backend/.ruby-version', 'backend/.rubocop.yml', 'backend/.rubocop_todo.yml', 'backend/Gemfile.lock') }}
+        with:
+          # Cache paths are relative to GITHUB_WORKSPACE (repo root), not
+          # to defaults.run.working-directory — hence the explicit
+          # `backend/` prefix.
+          path: backend/${{ env.RUBOCOP_CACHE_ROOT }}
+          key: rubocop-${{ runner.os }}-${{ env.DEPS_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
+          restore-keys: |
+            rubocop-${{ runner.os }}-${{ env.DEPS_HASH }}-
+
+      - name: Run RuboCop
+        run: bin/rubocop -f github
+
+  scan:
+    name: Brakeman + bundler-audit
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: backend
+
+      - name: Brakeman (static security scan)
+        run: bin/brakeman --no-pager
+
+      - name: bundler-audit (gem CVE scan)
+        run: bin/bundler-audit
+
+  test:
+    name: RSpec
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+
+    services:
+      postgres:
+        # PostGIS-bearing PostgreSQL 18 (the postgis/postgis image is the
+        # official Postgres image plus the PostGIS extension). Pinned to the
+        # major prod runs (Ubuntu 26.04 ships PostgreSQL 18, see
+        # docs/deployment/ec2-server-setup.md §6); the `-3.6` suffix is the PostGIS series
+        # (3.6 is the published line for PG18 — there is no `18-3.5` tag).
+        # The Land feature needs the postgis extension available — see
+        # docs/feature/land.md. Bump in lockstep when prod's LTS moves to a newer
+        # major so CI never tests a different server than production.
+        image: postgis/postgis:18-3.6
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd=pg_isready
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    env:
+      RAILS_ENV: test
+      # `postgis://` scheme so DATABASE_URL selects the postgis adapter (a
+      # `postgres://` URL forces the plain postgresql adapter, which lacks the
+      # `geography` column type the Land schema uses). activerecord-postgis-adapter
+      # registers this scheme. See docs/feature/land.md.
+      DATABASE_URL: postgis://postgres:postgres@localhost:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install system packages
+        # libvips for ActiveStorage variants; libpq-dev for the pg gem's
+        # native extension if the cached build needs to recompile.
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: backend
+
+      - name: Prepare test database
+        run: bin/rails db:test:prepare
+
+      - name: Run RSpec
+        run: bundle exec rspec

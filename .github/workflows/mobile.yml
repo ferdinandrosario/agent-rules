@@ -1,0 +1,121 @@
+name: Mobile CI
+
+# Per-codebase workflow. Triggers only when files under mobile/ change
+# (or this workflow file itself).
+#
+# Four independent gates: ESLint (`npm run lint`), TypeScript typecheck
+# (`tsc --noEmit`), npm audit, and Jest with coverage. ESLint config
+# lives in mobile/eslint.config.js (rule exceptions documented there).
+
+on:
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - '!mobile/**/*.md'
+      - '.github/workflows/mobile.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/**'
+      - '!mobile/**/*.md'
+      - '.github/workflows/mobile.yml'
+
+concurrency:
+  group: mobile-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+defaults:
+  run:
+    working-directory: mobile
+
+jobs:
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fails on a moderate-or-higher advisory in the SHIPPED dependency
+      # tree. `--omit=dev` is the project's documented audit standard
+      # (mobile/AGENTS.md "Audit before each release: npm audit --production"):
+      # build/test tooling (jest-expo, babel, msw, jsdom) never reaches users,
+      # and forcing its transitive CVEs to patched majors breaks the toolchain.
+      # Production-tree advisories are pinned in package.json `overrides`
+      # (js-yaml, ws). Keep the production tree at 0 the same way.
+      - name: Audit dependencies
+        run: npm audit --omit=dev --audit-level=moderate
+
+  test:
+    name: Jest
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest with coverage
+        run: npm test -- --coverage

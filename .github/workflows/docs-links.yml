@@ -1,0 +1,39 @@
+name: Docs links CI
+
+# Deterministic documentation-integrity check: scripts/check-doc-links.rb
+# fails the build on any BROKEN relative .md link or any ORPHAN doc under
+# docs/ or deploy/ (a tracked file no markdown links to). The script is the source of
+# truth — read its header for what each check means and why.
+#
+# Triggers only when markdown or the checker/workflow itself changes, so a
+# code-only PR skips it (mirrors the per-codebase paths-filtering). Uses the
+# runner's system Ruby: the script is stdlib-only (File + git via backticks),
+# so it needs no version manager or gems.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - 'scripts/check-doc-links.rb'
+      - '.github/workflows/docs-links.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.md'
+      - 'scripts/check-doc-links.rb'
+      - '.github/workflows/docs-links.yml'
+
+concurrency:
+  group: docs-links-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  doc-links:
+    name: Doc links + orphans
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check links + orphans
+        run: ruby scripts/check-doc-links.rb
