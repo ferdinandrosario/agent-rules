@@ -36,4 +36,4 @@ here. This file adds only the Claude-Code-specific wiring.
 
 Other agents (Copilot, Codex, Cursor, …): see
 [`AGENTS.md`](AGENTS.md) "Agent-specific entry points" and
-[`docs/ai-agents.md`](docs/ai-agents.md).
+[`docs/development/ai-agents.md`](docs/development/ai-agents.md).

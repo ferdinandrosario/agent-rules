@@ -10,7 +10,7 @@ This file is the **single source of truth**. `CLAUDE.md` imports it;
 the Copilot instruction files point to it; the per-codebase
 `.claude/skills/*/SKILL.md` redirect to the matching `<dir>/AGENTS.md`.
 Don't copy rules into those — edit them here (or in the per-codebase
-file). Full layout + the pointer-integrity check: [docs/ai-agents.md](docs/ai-agents.md).
+file). Full layout + the pointer-integrity check: [docs/development/ai-agents.md](docs/development/ai-agents.md).
 
 ## ROLE
 
@@ -106,17 +106,23 @@ Include exact commands, file paths, and expected outputs.
 
 (Precise · concise · complete — the test in rule 11 above.)
 
-`docs/` is the source of truth. Standard layout, authored as the app
-grows (pages land same-turn as the code they document — rule 5):
+`docs/` is the source of truth, organized by **topic folder** — one
+authoritative page per topic, indexed from
+[`docs/README.md`](docs/README.md). Pages are authored as the app grows
+(each lands same-turn as the code it documents — rule 5):
 
-- numbered `00`–`10` — the linear top-to-bottom guide (don't renumber);
+- topic folders (`getting-started/`, `architecture/`, `backend/`,
+  `web/`, `mobile/`, `development/`, `deployment/`, `operations/`,
+  `security/`, `troubleshooting/`) — reading order is navigation via
+  the index, not filename prefixes;
 - `docs/feature/<feature>.md` — per-feature canonical references
   (`feature/auth.md`, `feature/ui.md`, …);
 - `FEATURES.md` — one bullet per surface, the feature inventory;
 - `CONTRIBUTING.md` — the feature-doc checklist every PR runs;
 - `todo.md` — deferred ideas/suggestions (see the Todo section below);
-- `playbooks/` — re-runnable maintenance passes (each bundles the prompt
-  to paste, commands with expected output, and an adapt-over-time note);
+- `operations/playbooks/` — re-runnable maintenance passes (each bundles
+  the prompt to paste, commands with expected output, and an
+  adapt-over-time note);
 - `archive/` — dated point-in-time reports, frozen at write time; never
   edited — a wrong one is superseded by a new report.
 
@@ -200,12 +206,13 @@ Applies to every dependency, OS, and CI runner across `backend/`,
   old→new in the commit message. **The bump is not complete until the
   grep returns zero stale matches.** A pinned version touches root
   configs (`.ruby-version`, `.mise.toml`), `README.md`, the `AGENTS.md`
-  files (root + per-codebase, which quote exact pins), the numbered
-  docs (`01-prerequisites.md`, `09-deployment.md`,
-  `github-actions-guide.md`), every `docs/feature/<feature>.md` that quotes it,
-  and CI workflows — none of which fall under the per-codebase
-  doc-update mappings on their own. The exact verification grep lives
-  in [`docs/AGENTS.md`](docs/AGENTS.md) "Verification ritual".
+  files (root + per-codebase, which quote exact pins), the topic docs
+  that quote versions (`docs/getting-started/`, `docs/deployment/`,
+  `docs/development/github-actions.md`), every
+  `docs/feature/<feature>.md` that quotes it, and CI workflows — none
+  of which fall under the per-codebase doc-update mappings on their
+  own. The exact verification grep lives in `docs/AGENTS.md`
+  "Verification ritual" (authored per app).
 
 Codebase-specific deltas (audit command, RN/Expo nightly bans,
 pinning mechanics) live in the matching `<codebase>/AGENTS.md`. Don't
@@ -309,14 +316,17 @@ Agents that resolve the nearest file (Codex, Cursor, Gemini CLI, …)
 load it automatically when editing that tree; Claude Code loads the
 matching `.claude/skills/<dir>/SKILL.md`, which redirects to it.
 
-- [`backend/AGENTS.md`](backend/AGENTS.md) — Rails API rules
-- [`web/AGENTS.md`](web/AGENTS.md) — React + Vite rules
-- [`mobile/AGENTS.md`](mobile/AGENTS.md) — Expo + RN rules
-- [`docs/AGENTS.md`](docs/AGENTS.md) — `docs/`-only changes (numbering, feature checklist)
+- `backend/AGENTS.md` — Rails API rules
+- `web/AGENTS.md` — React + Vite rules
+- `mobile/AGENTS.md` — Expo + RN rules
+- `docs/AGENTS.md` — `docs/`-only changes (layout, feature checklist)
+
+(All four are authored per app — `stamp.sh` prints the checklist — so
+they are plain names here, clickable links in every stamped repo.)
 
 Seed data is modular per feature (`backend/db/seeds/<feature>.rb`); the
 "touch a table, update its seed + doc in the same change" rule lives in
-[`backend/AGENTS.md`](backend/AGENTS.md) and [`docs/seed-data.md`](docs/seed-data.md).
+`backend/AGENTS.md` and the seed-data page under `docs/backend/`.
 
 ## Agent-specific entry points
 
@@ -329,13 +339,13 @@ repo through its own file. All of these are **thin pointers** to this
 - **Codex / Cursor / Aider / Windsurf / Zed / Gemini CLI** — read this `AGENTS.md` and the nearest per-codebase one directly; no extra file needed.
 
 Full mapping + the (minimal) pointer-integrity check:
-[docs/ai-agents.md](docs/ai-agents.md). When you change a rule, change
+[docs/development/ai-agents.md](docs/development/ai-agents.md). When you change a rule, change
 it in the canonical `AGENTS.md` only — the pointers never need editing.
 
 ## Review
 
 Before opening a backend PR, check the diff against the layer rules in
-[`backend/AGENTS.md`](backend/AGENTS.md) — model/service/controller
+`backend/AGENTS.md` — model/service/controller
 boundaries, callback scoring, model size signals. Flag any violation in
 the PR description even when you don't fix it in the same change.
 
@@ -348,6 +358,7 @@ the PR description even when you don't fix it in the same change.
 - `// TODO:` / `# TODO:` comments in any language. Park it in
   `docs/todo.md` (see Todo above), file an issue, or do it now.
 - Process orchestrators (overmind, foreman, concurrently). Four terminals
-  is the deliberate choice — see `docs/05-running-locally.md`.
+  is the deliberate choice — see the running-locally page under
+  `docs/getting-started/`.
 - Comments restating *what* the code does. Comments explain *why* only.
 - `snake_case`/`camelCase` script filenames, or a script-name verb outside the Naming conventions vocabulary.
