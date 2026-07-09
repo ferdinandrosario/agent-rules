@@ -18,4 +18,5 @@ the matching `<dir>/AGENTS.md`:
 - mobile → [`../mobile/AGENTS.md`](../mobile/AGENTS.md)
 - docs → [`../docs/AGENTS.md`](../docs/AGENTS.md)
 
-Full agent layout: [`../AGENTS.md`](../AGENTS.md) "Agent-specific entry points".
+Full agent layout + the pointer-integrity check:
+[`../docs/development/ai-agents.md`](../docs/development/ai-agents.md).

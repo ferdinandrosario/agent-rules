@@ -1,6 +1,6 @@
 ---
 name: docs
-description: Use when adding or modifying files under `docs/` — numbered guides (00–10), per-feature canonical files, `FEATURES.md`, or `CONTRIBUTING.md`. Triggers on doc-only sessions and on the documentation half of any feature change.
+description: Use when adding or modifying files under `docs/` — topic folders (getting-started, backend, web, mobile, architecture, development, deployment, operations, security, troubleshooting), per-feature canonical files, `FEATURES.md`, or `CONTRIBUTING.md`. Triggers on doc-only sessions and on the documentation half of any feature change.
 ---
 
 # Docs — `docs/` is the source of truth

@@ -7,7 +7,8 @@ description: Use for idiomatic React (web) best-practice/how-to questions in thi
 
 For **general, idiomatic React best practices** that apply across all of
 Ferdy's apps, see the user-level `react` skill at
-[`/Users/ferdy/.claude/skills/react/SKILL.md`](/Users/ferdy/.claude/skills/react/SKILL.md)
+`~/.claude/skills/react/SKILL.md` (not a repo link — lives outside this
+checkout, in your home directory)
 — components/hooks, derive-don't-duplicate state, effects, lists/keys, data
 fetching, forms/a11y, testing.
 

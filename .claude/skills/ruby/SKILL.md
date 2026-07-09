@@ -7,7 +7,8 @@ description: Use for idiomatic Ruby best-practice/how-to questions in this repo 
 
 For **general, idiomatic Ruby best practices** that apply across all of
 Ferdy's apps, see the user-level `ruby` skill at
-[`/Users/ferdy/.claude/skills/ruby/SKILL.md`](/Users/ferdy/.claude/skills/ruby/SKILL.md)
+`~/.claude/skills/ruby/SKILL.md` (not a repo link — lives outside this
+checkout, in your home directory)
 — naming, blocks/enumerables, error handling, value objects, gem/test conventions.
 
 For **this project's binding rules** (stack, version delta, layer rules,

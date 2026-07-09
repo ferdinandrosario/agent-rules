@@ -7,7 +7,8 @@ description: Use for idiomatic React Native (Expo) best-practice/how-to question
 
 For **general, idiomatic React Native best practices** that apply across all of
 Ferdy's apps, see the user-level `react-native` skill at
-[`/Users/ferdy/.claude/skills/react-native/SKILL.md`](/Users/ferdy/.claude/skills/react-native/SKILL.md)
+`~/.claude/skills/react-native/SKILL.md` (not a repo link — lives outside
+this checkout, in your home directory)
 — components/hooks, navigation, lists/performance, styling, async/data, testing.
 
 For **this project's binding rules** (stack, version delta, layer rules,
