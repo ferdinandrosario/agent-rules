@@ -52,9 +52,9 @@ necessary.
   the local branch (`AGENTS.md` rule 8).
 - **Force-push is never covered by a general "push."** `git push --force` /
   `--force-with-lease` needs its own explicit, force-specific go-ahead in that
-  turn. When a rebase would otherwise need a force-push to an already-published
-  branch, `git revert` the redundant commits instead so the push stays a
-  fast-forward, or ask.
+  turn — "push this" does not authorize it. When a rebase would otherwise need
+  a force-push to an already-published branch, `git revert` the redundant
+  commits instead so the push stays a fast-forward, or ask.
 - **Integrate by rebase, never merge.** Rebase feature branches onto an
   up-to-date `main`; PRs land as "Rebase and merge" only.
 - **Keep local `main` synced.** `git fetch` + fast-forward `main` to

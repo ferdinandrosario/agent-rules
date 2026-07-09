@@ -6,7 +6,7 @@
 # Anchored to this repo via $0 so it works whatever the session cwd is.
 set -eu
 
-root=$(CDPATH= cd "$(dirname "$0")/../.." 2>/dev/null && pwd) || exit 0
+root=$(CDPATH='' cd "$(dirname "$0")/../.." 2>/dev/null && pwd) || exit 0
 cd "$root" || exit 0
 
 # Diff against the default-branch merge-base when one exists, so code

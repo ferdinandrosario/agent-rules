@@ -7,7 +7,8 @@ description: Use for idiomatic Ruby on Rails best-practice/how-to questions in t
 
 For **general, idiomatic Rails best practices** that apply across all of
 Ferdy's apps, see the user-level `rails` skill at
-[`/Users/ferdy/.claude/skills/rails/SKILL.md`](/Users/ferdy/.claude/skills/rails/SKILL.md)
+`~/.claude/skills/rails/SKILL.md` (not a repo link — lives outside this
+checkout, in your home directory)
 — models, migrations, API design, callback policy, jobs, query/N+1, testing.
 
 For **this project's binding rules** (stack, version delta, layer rules,
