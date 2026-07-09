@@ -53,7 +53,9 @@ Sweep four scopes. For every finding record the file, the evidence
 - Referenced paths, binaries, env vars, and hosts still exist.
 - Dead ends both ways: scripts referenced nowhere, and docs referencing
   scripts that no longer exist.
-- Filenames self-explanatory per the repo's `NAMING-CONVENTIONS.md`.
+- Filenames self-explanatory per the repo's naming-conventions reference
+  (`docs/development/naming-conventions.md`, or root `NAMING-CONVENTIONS.md`
+  in repos that predate the move).
   Report naming findings here; a **systematic** rename effort is the
   `repo-naming` skill's job — recommend it rather than duplicating it.
 

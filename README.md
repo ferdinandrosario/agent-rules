@@ -17,11 +17,11 @@ when a universal rule earns a permanent change.
 |---|---|
 | `AGENTS.md` | Universal rules: ROLE, ABSOLUTE RULES 1–13, output/doc/test/version/**validation** sections, forbidden list. **Single source of truth.** |
 | `CLAUDE.md` | Thin Claude wrapper: `@AGENTS.md` + skill/hook wiring. |
-| `NAMING-CONVENTIONS.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
+| `docs/development/naming-conventions.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |
 | `.claude/skills/<lang>/SKILL.md` | Language how-to skills (`rails` `ruby` `react` `react-native`) — two-layer pointers: the user-level generic skill (`~/.claude/skills/<lang>/`, deployed from `user-skills/`) for cross-app idioms, and the matching `<dir>/AGENTS.md` as the binding override on any conflict. Pruned with their codebase. |
 | `user-skills/<skill>/SKILL.md` | **Canonical source of the user-level generic skills** — the four language skills (layered best practices, beginner → staff) plus the `drift-audit` process skill. Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
-| `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `NAMING-CONVENTIONS.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
+| `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `docs/development/naming-conventions.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
 | `.claude/skills/drift-audit/SKILL.md` | Thin pointer to the user-level `drift-audit` skill — report-first audit of docs/scripts/skills vs reality (findings table → STOP → fix approved items). Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | Stop — **warns** when code changed but `docs/` didn't. |
