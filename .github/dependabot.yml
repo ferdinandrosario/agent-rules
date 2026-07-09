@@ -1,0 +1,51 @@
+version: 2
+
+# Single repo-root Dependabot config covering all three codebases plus
+# the GitHub Actions ecosystem itself. Dependabot only reads from the
+# repo-root .github/ directory — a co-located backend/.github/ copy
+# would be inert.
+#
+# The <web>/<mobile> marker comments delimit each prunable codebase's
+# entry: stamp.sh deletes the block when that codebase is omitted, and
+# strips the leftover marker lines when it is kept.
+
+updates:
+  - package-ecosystem: bundler
+    directory: /backend
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - backend
+
+  # <web>
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - web
+  # </web>
+
+  # <mobile>
+  - package-ecosystem: npm
+    directory: /mobile
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - mobile
+  # </mobile>
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - ci

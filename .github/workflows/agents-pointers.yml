@@ -1,0 +1,74 @@
+name: Agent rules CI
+
+# Pointer-integrity check from docs/development/ai-agents.md, run deterministically.
+# Triggers only when a canonical AGENTS.md, a thin pointer, or the
+# Claude wiring changes (or this workflow file itself).
+
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'backend/AGENTS.md'
+      - 'web/AGENTS.md'
+      - 'mobile/AGENTS.md'
+      - 'docs/AGENTS.md'
+      - 'CLAUDE.md'
+      - '.claude/**'
+      - '.github/copilot-instructions.md'
+      - '.github/instructions/**'
+      - '.github/workflows/agents-pointers.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'backend/AGENTS.md'
+      - 'web/AGENTS.md'
+      - 'mobile/AGENTS.md'
+      - 'docs/AGENTS.md'
+      - 'CLAUDE.md'
+      - '.claude/**'
+      - '.github/copilot-instructions.md'
+      - '.github/instructions/**'
+      - '.github/workflows/agents-pointers.yml'
+
+concurrency:
+  group: agents-pointers-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  pointer-integrity:
+    name: Pointer integrity
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: All five canonical files exist
+        run: ls AGENTS.md backend/AGENTS.md web/AGENTS.md mobile/AGENTS.md docs/AGENTS.md
+
+      - name: CLAUDE.md imports the universal canon
+        run: grep -q '^@AGENTS.md' CLAUDE.md && echo "CLAUDE.md @imports AGENTS.md"
+
+      - name: Every pointer points home and stays thin
+        run: |
+          status=0
+          for f in .github/copilot-instructions.md .github/instructions/*.instructions.md \
+                   .claude/skills/*/SKILL.md; do
+            if ! grep -q 'AGENTS.md' "$f"; then
+              echo "MISSING AGENTS.md pointer: $f"
+              status=1
+            fi
+            n=$(wc -l < "$f")
+            if [ "$n" -gt 30 ]; then
+              echo "RULE CONTENT LEAKED (>30 lines): $f ($n)"
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Hook scripts parse as POSIX sh
+        run: |
+          for s in .claude/hooks/*.sh; do
+            sh -n "$s" && echo "OK: $s"
+          done

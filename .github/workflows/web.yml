@@ -1,0 +1,106 @@
+name: Web CI
+
+# Per-codebase workflow. Triggers only when files under web/ change
+# (or this workflow file itself).
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '!web/**/*.md'
+      - '.github/workflows/web.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '!web/**/*.md'
+      - '.github/workflows/web.yml'
+
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      # Strict type-check of the .ts/.tsx files (incremental TypeScript
+      # migration -- web/AGENTS.md "Stack"). tsc only checks; Vite builds.
+      - name: Type-check
+        run: npm run typecheck
+
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fails on a moderate-or-higher advisory in the SHIPPED dependency
+      # tree. `--omit=dev` is the project's documented audit standard
+      # (web/AGENTS.md "Audit before each release: npm audit --production"):
+      # build/test tooling (jest, babel, msw, jsdom) never reaches users, and
+      # forcing its transitive CVEs to patched majors breaks the toolchain.
+      # Keep the production tree at 0 via `npm audit fix --omit=dev` or a
+      # pinned `overrides` entry.
+      - name: Audit dependencies
+        run: npm audit --omit=dev --audit-level=moderate
+
+  test:
+    name: Jest
+    runs-on: ubuntu-latest
+    if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26.3.1"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest with coverage
+        # --forceExit: undici's global connection pool keeps the event
+        # loop alive after tests finish. Locally Jest force-exits with a
+        # warning; on the Ubuntu runner it just hangs. Until the shim
+        # closes the dispatcher in afterAll, force-exit is the
+        # practical fix. (Documented in docs/troubleshooting/README.md.)
+        run: npm test -- --watchAll=false --coverage --forceExit

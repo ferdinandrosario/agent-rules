@@ -1,0 +1,9 @@
+# Code owners — GitHub requests a review from the listed owner on every
+# PR that touches a matching path. Combined with branch protection
+# ("Require review from Code Owners" on main), this stops unguarded
+# single-author merges to main.
+#
+# Solo maintainer today: one catch-all owner. Split per surface
+# (/backend/ /web/ /mobile/ /docs/) when more reviewers join.
+
+* @ferdinandrosario
