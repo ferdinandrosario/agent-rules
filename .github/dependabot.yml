@@ -1,46 +1,15 @@
 version: 2
 
-# Single repo-root Dependabot config covering all three codebases plus
-# the GitHub Actions ecosystem itself. Dependabot only reads from the
-# repo-root .github/ directory — a co-located backend/.github/ copy
-# would be inert.
+# Template repo's OWN Dependabot config: github-actions only, because the
+# template carries workflows but no backend/web/mobile code — a codebase
+# ecosystem entry here would fail weekly against a directory that doesn't
+# exist (Dependabot has no equivalent of the workflows' template-only
+# `if:` guard).
 #
-# The <web>/<mobile> marker comments delimit each prunable codebase's
-# entry: stamp.sh deletes the block when that codebase is omitted, and
-# strips the leftover marker lines when it is kept.
+# The full app config lives in dependabot-app.yml; stamp.sh moves it over
+# this file, so a stamped app gets all four ecosystems.
 
 updates:
-  - package-ecosystem: bundler
-    directory: /backend
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - backend
-
-  # <web>
-  - package-ecosystem: npm
-    directory: /web
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - web
-  # </web>
-
-  # <mobile>
-  - package-ecosystem: npm
-    directory: /mobile
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - mobile
-  # </mobile>
-
   - package-ecosystem: github-actions
     directory: /
     schedule:

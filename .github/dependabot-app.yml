@@ -1,0 +1,53 @@
+version: 2
+
+# The STAMPED APP's Dependabot config: all three codebases plus the
+# GitHub Actions ecosystem. Inert in the template repo (Dependabot only
+# reads .github/dependabot.yml — the template's own minimal, actions-only
+# config); stamp.sh moves this file over dependabot.yml, activating it in
+# the stamped app. Dependabot only reads from the repo-root .github/
+# directory — a co-located backend/.github/ copy would be inert too.
+#
+# The <web>/<mobile> marker comments delimit each prunable codebase's
+# entry: stamp.sh deletes the block when that codebase is omitted, and
+# strips the leftover marker lines when it is kept.
+
+updates:
+  - package-ecosystem: bundler
+    directory: /backend
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - backend
+
+  # <web>
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - web
+  # </web>
+
+  # <mobile>
+  - package-ecosystem: npm
+    directory: /mobile
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - mobile
+  # </mobile>
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - ci

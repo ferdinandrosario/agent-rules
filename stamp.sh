@@ -52,6 +52,11 @@ rm -f "$APP/README.md" "$APP/stamp.sh"                 # template-only files
 rm -rf "$APP/.git" "$APP/user-skills"
 find "$APP" -name .DS_Store -delete 2>/dev/null || true
 echo "✔ copied template core into $APP"
+# activate the app Dependabot config: the copied dependabot.yml is the
+# template's own actions-only one (codebase entries would fail there —
+# no app code); the app gets the full four-ecosystem config instead.
+mv "$APP/.github/dependabot-app.yml" "$APP/.github/dependabot.yml"
+echo "✔ activated app Dependabot config"
 
 # --- prune codebases the app does not have ----------------------------------
 # Pruning a codebase drops everything that points at its AGENTS.md so nothing

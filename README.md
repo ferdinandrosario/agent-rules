@@ -33,7 +33,7 @@ when a universal rule earns a permanent change.
 | `.claude/commands/token-efficiency.md` | Token rules (AGENTS.md rule 7). |
 | `.github/copilot-instructions.md` + `.github/instructions/<dir>.instructions.md` | GitHub Copilot pointers — root stub + path-scoped (`applyTo:`) redirects to each `<dir>/AGENTS.md`. Pruned with their codebase. |
 | `.github/workflows/` | The CI suite: per-codebase CI (`backend.yml`, `web.yml`, `mobile.yml` — pruned with their codebase), `docs-links.yml` (runs the doc checker), `agents-pointers.yml` (pointer integrity), `secrets-guard.yml` (no tracked secrets). App-code workflows carry a template-only `if:` guard so they skip on this repo; `stamp.sh` strips it. |
-| `.github/dependabot.yml` | Weekly dependency PRs for bundler + npm + github-actions; `<web>`/`<mobile>` marker comments let `stamp.sh` prune entries with their codebase. |
+| `.github/dependabot-app.yml` | The stamped app's Dependabot config — weekly dependency PRs for bundler + npm + github-actions; `<web>`/`<mobile>` marker comments let `stamp.sh` prune entries with their codebase. Inert here (`.github/dependabot.yml` is the template's own actions-only config); `stamp.sh` moves it over `dependabot.yml` to activate it. |
 | `.github/pull_request_template.md` + `.github/CODEOWNERS` | The PR checklist that mirrors AGENTS.md's rules, and the catch-all review owner. |
 | `Makefile` | Uniform test front door (`make test`, `make test-<codebase>`, `make test-coverage`); pruned targets follow their codebase. |
 | `scripts/check-doc-links.rb` | Broken-link + orphan check over tracked markdown (run by `docs-links.yml`). Ships with `ORPHAN_ROOTS` = `docs/README.md` and an `AUTHORED_PER_APP` allowlist for the four per-app `AGENTS.md` targets. |
@@ -85,6 +85,7 @@ authoring checklist. `<APP>` = the new repo's absolute path.
 Expected (default — full structure, nothing pruned):
 ```
 ✔ copied template core into <APP>
+✔ activated app Dependabot config
 ✔ stripped template-only CI guards
 ✔ cleaned Dependabot prune markers
 ✔ docs-with-code.sh now watches: backend|web|mobile
@@ -96,10 +97,11 @@ already exists, so a stamped repo can't be clobbered.
 
 **What the script does (deterministic):** copies the core; deletes the
 template-only files (`README.md`, `stamp.sh`) and dirs (`.git`,
-`user-skills/`) from the target; removes each pruned codebase's skill dir
-(its language how-to skills + Copilot instruction file too), CI workflow,
-Dependabot entry, and Makefile targets; strips the template-only CI guard
-lines; and rewrites the `docs-with-code.sh` watch list.
+`user-skills/`) from the target; moves `dependabot-app.yml` over the
+template's actions-only `dependabot.yml`; removes each pruned codebase's
+skill dir (its language how-to skills + Copilot instruction file too), CI
+workflow, Dependabot entry, and Makefile targets; strips the template-only
+CI guard lines; and rewrites the `docs-with-code.sh` watch list.
 
 **What you author by hand (needs judgment — the script lists these):**
 
