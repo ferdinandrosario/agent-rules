@@ -5,7 +5,7 @@ contributor can guess a file's job from its name alone — and name a new file
 the same way without asking anyone.
 
 Scope: shell scripts (`scripts/**`, `.claude/**`) and Markdown docs. The
-condensed rules also live in [`AGENTS.md`](AGENTS.md) ("Naming conventions") so
+condensed rules also live in [`AGENTS.md`](../../AGENTS.md) ("Naming conventions") so
 the AI agents enforce them; this file is the full reference.
 
 ## TL;DR
@@ -14,7 +14,7 @@ the AI agents enforce them; this file is the full reference.
   **lifecycle** (run-once vs run-often); the rest names the **target**
   (env + platform + topology). `bootstrap-single-vm.sh`, not `provision-ec2.sh`.
 - **Docs:** lowercase `kebab-case`, except all-caps landmark files
-  (`README.md`, `CONTRIBUTING.md`, `AGENTS.md`, this file, …).
+  (`README.md`, `CONTRIBUTING.md`, `AGENTS.md`, …).
 - **One concept = one word**, everywhere (`digitalocean`, never `do`).
 - **No abbreviation a newcomer wouldn't know.** Spell it out.
 
@@ -101,7 +101,7 @@ The same idea always gets the same word, repo-wide:
 
 - **Landmark files** keep their conventional names and are **never** renamed —
   tools and humans find them by exact name:
-  - Top-level references: `README.md`, `CONTRIBUTING.md`, `NAMING-CONVENTIONS.md`
+  - Top-level references: `README.md`, `CONTRIBUTING.md`
   - Agent / index landmarks: `AGENTS.md`, `CLAUDE.md`, `SKILL.md`, `FEATURES.md`,
     `CODEOWNERS`
   - Tool-mandated exact names: `.github/**/*.instructions.md` (Copilot),
@@ -142,7 +142,7 @@ git commit -m "refactor: rename provision-ec2.sh -> bootstrap-single-vm.sh"
 
 `git show --stat` then shows the file as a rename (`R…`), not a delete+add.
 Full git rules (rebase-only, `--force-with-lease` only, branch naming) are in
-[`AGENTS.md`](AGENTS.md) "Git workflow". The `repo-naming` skill
+[`AGENTS.md`](../../AGENTS.md) "Git workflow". The `repo-naming` skill
 (`.claude/skills/repo-naming/`) drives the whole audit → rename → verify pass.
 
 ## Adding a new script

@@ -6,7 +6,7 @@ description: Use when renaming or standardizing script/doc filenames in this rep
 # Repo naming — this repo
 
 The canonical, full reference is
-[`NAMING-CONVENTIONS.md`](../../../NAMING-CONVENTIONS.md) — verb-first
+[`docs/development/naming-conventions.md`](../../../docs/development/naming-conventions.md) — verb-first
 `kebab-case`, lifecycle prefixes, per-concept canonical terms, the Markdown
 rules, and the rename ritual. **Read it before renaming a file or naming a new
 one.**

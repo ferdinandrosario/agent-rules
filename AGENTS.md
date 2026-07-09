@@ -241,17 +241,17 @@ Operational detail for ABSOLUTE RULE 8 (which governs *when* a git command needs
 - **Rebase, never merge.** `git pull --rebase` (`pull.rebase=true`); keep local `main` fast-forwarded from `origin/main` before branching or rebasing.
 - **Atomic commits.** One commit = one logical change with everything it needs to stay self-consistent and bisectable. A **file rename is the `git mv` plus every reference update, together in one commit**.
 - **Conventional Commit subjects:** `refactor: rename OLD -> NEW`, `docs: …`, `feat(scope): …`.
-- **Renames use `git mv` only** — never delete + recreate (keeps history and the executable bit). Prove zero orphaned references with `git grep` before committing; full ritual in [`NAMING-CONVENTIONS.md`](NAMING-CONVENTIONS.md) "Renaming an existing file".
+- **Renames use `git mv` only** — never delete + recreate (keeps history and the executable bit). Prove zero orphaned references with `git grep` before committing; full ritual in [`docs/development/naming-conventions.md`](docs/development/naming-conventions.md) "Renaming an existing file".
 - **Force-push:** `--force-with-lease` only, on your own feature branch only, only on an explicit force instruction — never shared history.
 
 ## Naming conventions
 
-Full reference: [`NAMING-CONVENTIONS.md`](NAMING-CONVENTIONS.md). The rules:
+Full reference: [`docs/development/naming-conventions.md`](docs/development/naming-conventions.md). The rules:
 
 - **Scripts** — lowercase `kebab-case`, **verb-first**, the verb encoding lifecycle: run-once (`provision-` create cloud infra · `bootstrap-` configure a fresh host · `setup-` install deps) vs runtime (`deploy-` ship a release · `run-` foreground · `start-` background · `build-`/`backup-`/`check-`).
 - **Name the target** — env (`-production`/`-staging`/`-local`) + platform (`-aws`/`-ubuntu`/…) + topology (`-single-vm`/`-containers`/`-nginx`/`-foreground`) — and **only what the script truly needs** (a VM-agnostic installer is `bootstrap-single-vm.sh`, not `bootstrap-ec2.sh`).
 - **One concept = one word** — `digitalocean` not `do`; `single-vm` not `single`/`single-box`; `provision-` = create a box, `bootstrap-` = configure a box. No abbreviation a newcomer wouldn't know (only `aws db vm ssh tls api ip ci cd pg`).
-- **Markdown** — lowercase `kebab-case`, except all-caps landmark files (`README` `CONTRIBUTING` `AGENTS` `CLAUDE` `SKILL` `NAMING-CONVENTIONS`, `CODEOWNERS`) and tool-mandated names (`*.instructions.md`, `pull_request_template.md`). A script and its dedicated runbook doc share the same stem and are renamed together.
+- **Markdown** — lowercase `kebab-case`, except root-mandated files (`README` `AGENTS` `CLAUDE`), canonical landmarks kept at exact name wherever they live (`CONTRIBUTING` `FEATURES` `SKILL`, `CODEOWNERS`), and tool-mandated names (`*.instructions.md`, `pull_request_template.md`). A script and its dedicated runbook doc share the same stem and are renamed together.
 - The `repo-naming` skill (`.claude/skills/repo-naming/`) runs the audit → propose → `git mv` → verify process.
 
 ## System-level installs (hand to the user)
