@@ -24,7 +24,7 @@ when a universal rule earns a permanent change.
 | `docs/development/naming-conventions.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |
 | `.claude/skills/<lang>/SKILL.md` | Language how-to skills (`rails` `ruby` `react` `react-native`) — two-layer pointers: the user-level generic skill (`~/.claude/skills/<lang>/`, deployed from `user-skills/`) for cross-app idioms, and the matching `<dir>/AGENTS.md` as the binding override on any conflict. Pruned with their codebase. |
-| `user-skills/<skill>/SKILL.md` | **Canonical source of the user-level generic skills** — the four language skills (layered best practices, beginner → staff) plus the `drift-audit` and `repo-naming` process skills. Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
+| `user-skills/<skill>/SKILL.md` | **Canonical source of the user-level generic skills** — the four language skills (layered best practices, beginner → staff) plus the `drift-audit`, `repo-naming`, and `git` process skills. Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
 | `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `docs/development/naming-conventions.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
 | `.claude/skills/drift-audit/SKILL.md` | Thin pointer to the user-level `drift-audit` skill — report-first audit of docs/scripts/skills vs reality (findings table → STOP → fix approved items). Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
@@ -53,10 +53,13 @@ when a universal rule earns a permanent change.
 
 ## User-level generic skills (`user-skills/` → `~/.claude/skills/`)
 
-The generic skills every repo's thin pointers reference — the four
-language skills plus the `drift-audit` and `repo-naming` process skills —
-live here so they are versioned; the live copies Claude actually loads
-sit in `~/.claude/skills/`. After editing one under `user-skills/`,
+The user-level generic skills — the four language skills plus the
+`drift-audit`, `repo-naming`, and `git` process skills — live here so
+they are versioned; the live copies Claude actually loads sit in
+`~/.claude/skills/`. The language and audit skills are referenced by
+each repo's thin pointers; `git` triggers directly on any git-workflow
+question (a repo's `AGENTS.md` git rules override it on conflict, so it
+needs no per-repo pointer). After editing one under `user-skills/`,
 deploy it:
 
 ```sh
