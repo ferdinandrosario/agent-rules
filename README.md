@@ -27,6 +27,7 @@ when a universal rule earns a permanent change.
 | `user-skills/<skill>/SKILL.md` | **Canonical source of the user-level generic skills** — the four language skills (layered best practices, beginner → staff) plus the `drift-audit`, `repo-naming`, and `git` process skills. Not stamped into repos — deployed to `~/.claude/skills/` (see below). |
 | `.claude/skills/repo-naming/SKILL.md` | Redirects Claude to `docs/development/naming-conventions.md` + `AGENTS.md` for any rename/standardize-filenames task. Not a codebase skill — survives pruning. |
 | `.claude/skills/drift-audit/SKILL.md` | Thin pointer to the user-level `drift-audit` skill — report-first audit of docs/scripts/skills vs reality (findings table → STOP → fix approved items). Not a codebase skill — survives pruning. |
+| `.claude/skills/git/SKILL.md` | Thin pointer to the user-level `git` skill — the rebase-only, linear-history workflow (confirmation gates, PR landing, recovery); the repo's `AGENTS.md` rule 8 + Git workflow section override it. Not a codebase skill — survives pruning. |
 | `.claude/hooks/no-todo.sh` | PostToolUse — **blocks** an edited code file containing `TODO`/`FIXME`. |
 | `.claude/hooks/docs-with-code.sh` | Stop — **warns** when code changed but `docs/` didn't. |
 | `.claude/settings.json` | Wires the two hooks + token-saving knobs (`autoCompactEnabled`, skill-listing caps, read-only-tool allow-list). |
@@ -53,14 +54,11 @@ when a universal rule earns a permanent change.
 
 ## User-level generic skills (`user-skills/` → `~/.claude/skills/`)
 
-The user-level generic skills — the four language skills plus the
-`drift-audit`, `repo-naming`, and `git` process skills — live here so
-they are versioned; the live copies Claude actually loads sit in
-`~/.claude/skills/`. The language and audit skills are referenced by
-each repo's thin pointers; `git` triggers directly on any git-workflow
-question (a repo's `AGENTS.md` git rules override it on conflict, so it
-needs no per-repo pointer). After editing one under `user-skills/`,
-deploy it:
+The generic skills every repo's thin pointers reference — the four
+language skills plus the `drift-audit`, `repo-naming`, and `git` process
+skills — live here so they are versioned; the live copies Claude
+actually loads sit in `~/.claude/skills/`. After editing one under
+`user-skills/`, deploy it:
 
 ```sh
 cp -R ~/Downloads/agent-rules/user-skills/. ~/.claude/skills/
