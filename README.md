@@ -68,6 +68,20 @@ diff -rq ~/Downloads/agent-rules/user-skills ~/.claude/skills | grep -v "Only in
 Edit in this repo first, then deploy — never edit `~/.claude/skills/`
 directly, or the change is unversioned and dies with the machine.
 
+## Learning library (`learning/`)
+
+The standalone learning library — servers/deployment, Rails, React, and
+TypeScript guides that explain *why* each production piece exists, plus the
+`learning-prompts.md` prompt pack — extracted from
+`personal_manager/docs/learning` (2026-07-10). It is a **shared reference,
+consulted in place**: study a topic here, then apply it in whichever project
+you're building. See [`learning/README.md`](learning/README.md) for the guide
+index.
+
+Like `user-skills/`, it lives in this template but is **not stamped** into new
+repos (`stamp.sh` prunes it) — projects reference this one central copy rather
+than each carrying a duplicate.
+
 ## Stamp a new repo
 
 No Claude required — `stamp.sh` does the mechanical part and prints the
@@ -97,7 +111,7 @@ already exists, so a stamped repo can't be clobbered.
 
 **What the script does (deterministic):** copies the core; deletes the
 template-only files (`README.md`, `stamp.sh`) and dirs (`.git`,
-`user-skills/`) from the target; moves `dependabot-app.yml` over the
+`user-skills/`, `learning/`) from the target; moves `dependabot-app.yml` over the
 template's actions-only `dependabot.yml`; removes each pruned codebase's
 skill dir (its language how-to skills + Copilot instruction file too), CI
 workflow, Dependabot entry, and Makefile targets; strips the template-only

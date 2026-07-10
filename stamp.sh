@@ -47,9 +47,10 @@ mkdir -p "$APP"
 # --- copy -------------------------------------------------------------------
 cp -R "$TEMPLATE/." "$APP/"
 rm -f "$APP/README.md" "$APP/stamp.sh"                 # template-only files
-# template-only dirs: the template's own git history/remote, and the
-# user-skill sources (deployed to ~/.claude/skills, never stamped).
-rm -rf "$APP/.git" "$APP/user-skills"
+# template-only dirs: the template's own git history/remote, the user-skill
+# sources (deployed to ~/.claude/skills, never stamped), and the central
+# learning library (a shared reference, consulted in place — not copied per app).
+rm -rf "$APP/.git" "$APP/user-skills" "$APP/learning"
 find "$APP" -name .DS_Store -delete 2>/dev/null || true
 echo "✔ copied template core into $APP"
 # activate the app Dependabot config: the copied dependabot.yml is the
