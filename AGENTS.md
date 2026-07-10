@@ -251,6 +251,8 @@ Operational detail for ABSOLUTE RULE 8 (which governs *when* a git command needs
 - **Renames use `git mv` only** — never delete + recreate (keeps history and the executable bit). Prove zero orphaned references with `git grep` before committing; full ritual in [`docs/development/naming-conventions.md`](docs/development/naming-conventions.md) "Renaming an existing file".
 - **Force-push:** `--force-with-lease` only, on your own feature branch only, only on an explicit force instruction — never shared history.
 
+Deeper git questions (confirmation gates, PR landing, recovery)? The `git` skill (`.claude/skills/git/`) loads the full rebase-only, linear-history workflow — this section and ABSOLUTE RULE 8 override it on any conflict.
+
 ## Naming conventions
 
 Full reference: [`docs/development/naming-conventions.md`](docs/development/naming-conventions.md). The rules:
