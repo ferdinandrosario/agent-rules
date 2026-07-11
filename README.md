@@ -10,16 +10,19 @@ and the shipped `docs/` pages. Originated from `personal_manager`
 (2026-06-16). Cross-agent: Claude Code, Copilot, Codex, Cursor, … all
 read the files this drops into the repo.
 
-This is a **snapshot, not a live link** — stamping copies these files into
-the new repo, which then diverges freely. Edits here do **not** propagate to
-already-stamped repos (and vice-versa). Keep this template current by hand
-when a universal rule earns a permanent change.
+Stamping copies these files into the new repo. App-specific parts (the
+`## STACK` pins, per-codebase `AGENTS.md`, docs pages) then diverge
+freely; the **shared core stays in lockstep** — when a shared skill or a
+universal `AGENTS.md` rule changes in any copy, make the same change in
+this template and every stamped app in the same turn (`AGENTS.md`
+"Skill & rule sync"). Nothing propagates automatically — the sync is a
+discipline, not a mechanism.
 
 ## What's project-agnostic (here, copied verbatim)
 
 | File | Role |
 |---|---|
-| `AGENTS.md` | Universal rules: ROLE, ABSOLUTE RULES 1–13, output/doc/test/version/**validation** sections, forbidden list. **Single source of truth.** |
+| `AGENTS.md` | Universal rules: ROLE, **PROJECT LAYOUT** (the standard repo structure), ABSOLUTE RULES 1–13, output/doc/test/version/**validation** sections, forbidden list. **Single source of truth.** |
 | `CLAUDE.md` | Thin Claude wrapper: `@AGENTS.md` + skill/hook wiring. |
 | `docs/development/naming-conventions.md` | Full reference for naming scripts & docs — verb-first `kebab-case`, lifecycle prefixes, per-concept canonical terms, the rename ritual. Condensed in `AGENTS.md` "Naming conventions". |
 | `.claude/skills/<dir>/SKILL.md` | Redirects Claude to each `<dir>/AGENTS.md`. |

@@ -26,6 +26,30 @@ mobile/   → React Native + Expo SDK 56 (TypeScript) — NativeWind v4 + react-
 docs/     → source of truth (UI stack: docs/feature/ui.md)
 ```
 
+## PROJECT LAYOUT (standard structure, every repo from this template)
+
+Every project stamped from this template carries the same top-level
+structure — a repo is not set up until all of these exist:
+
+- `AGENTS.md` — this canonical ruleset, plus one `AGENTS.md` per
+  codebase directory (authored per app).
+- `.claude/skills/` — the shared skill set (codebase redirects, language
+  how-tos, `drift-audit`, `repo-naming`, `git`), kept in lockstep across
+  repos (see "Skill & rule sync").
+- `backend/` — all backend (API) code.
+- `web/` — all front-end (browser) code. An app may rename it to say
+  what the client is (e.g. `web-admin/`) — one web client, one directory.
+- `mobile/` — all mobile source code.
+- `docs/` — all documentation, grouped by use: topic folders plus
+  `feature/` pages (the DOCUMENTATION section below defines the grouping).
+
+`backend/` and `docs/` are mandatory; `web/` and `mobile/` are standard
+and included by default — omit one only as a deliberate stamp-time
+choice (`./stamp.sh <target> [codebase ...]`), which prunes everything
+pointing at it. Code never lives at the repo root: every source file
+belongs to exactly one codebase directory, and each codebase carries
+its own `AGENTS.md`.
+
 ## ABSOLUTE RULES (apply to every response)
 
 1. **No invented requirements** — don't assume a fact you haven't
@@ -291,14 +315,17 @@ kind: a rule/convention → this `AGENTS.md` (or the nearest
 codebase how-to → the relevant `.claude/skills/<dir>/SKILL.md`. Unsure
 which file? Confirm the plan before writing.
 
-## Skill sync
+## Skill & rule sync
 
-The `.claude/skills/` here are the shared core that the apps built from
-this template also carry. Skills are the **one exception to
-copy-then-diverge**: when a shared skill changes in any copy, make the
-same change in this template and those apps in the same turn, so they
-never drift. App-specific rules (`AGENTS.md`, `<dir>/AGENTS.md`) still
-diverge freely.
+The `.claude/skills/` here and the **universal rules** in this
+`AGENTS.md` are the shared core that the apps built from this template
+also carry. Both are exceptions to copy-then-diverge: when a shared
+skill — or a universal rule/section (PROJECT LAYOUT, an ABSOLUTE RULE,
+…) — changes in any copy, make the same change in this template and
+those apps in the same turn, so they never drift. Nothing propagates
+automatically — the sync is a discipline, not a mechanism. App-specific
+rules (the `## STACK` pins, `<dir>/AGENTS.md`, per-app wording of a
+universal section) still diverge freely.
 
 ## Todo
 
