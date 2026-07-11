@@ -66,6 +66,11 @@ git checkout main && git pull --rebase
 
 - Wait for CI before merging; a red or pending check never gets merged
   over.
+- **The watch's exit code is the merge gate.** `gh pr checks --watch`
+  exits non-zero on any failed check, but piping it (`| tail`, `| grep`)
+  masks that — a pipeline returns the *last* command's status, so a
+  chained `&& gh pr merge` runs anyway. Capture the code
+  (`out=$(gh pr checks N --watch); ec=$?`) and merge only when it is 0.
 - After the merge, fast-forward local `main` and confirm the branch is
   gone — `--delete-branch` removes both the remote and local copies.
 
