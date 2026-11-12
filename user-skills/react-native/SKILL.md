@@ -14,9 +14,11 @@ of truth and **overrides** anything here on conflict (version delta, UI
 stack, approved libraries, base-URL-by-environment, API contract, testing
 gotchas).
 
-Version context: Expo SDK **56** / RN **0.85** era as of 2026. Default to
-the **Expo managed workflow** and TypeScript; check `app.json` /
-`package.json` before using newer APIs.
+Version context: Expo SDK **57** / RN **0.86** / React 19.2 as of 2026-11
+(SDK 57 is a non-breaking bump over 56; Expo now ships such in-between
+SDKs). Default to the **Expo managed workflow** and TypeScript; check
+`app.json` / `package.json` before using newer APIs. Upgrade with
+`npx expo install expo@^57.0.0 --fix` then `npx expo-doctor@latest`.
 
 **How to read this:** three layers — Foundations for any reader, Everyday
 craft as the working vocabulary, Design as the judgment layer. Every rule
@@ -28,6 +30,12 @@ carries its why.
   community package, and a config plugin before ejecting. *Why:* the managed
   happy path keeps upgrades, builds (EAS), and native config declarative —
   every step off it is native maintenance you now own.
+- **`ios/` and `android/` are generated output, never hand-edited.**
+  Since SDK 57 `expo prebuild` clears and regenerates them by default.
+  Native config belongs in `app.json` / config plugins. *Why:* a manual
+  native edit is silently wiped on the next prebuild and is invisible in
+  review. Use a development build (`expo-dev-client`), not store Expo Go,
+  once any native module is involved — Expo Go lags the newest SDK.
 - **There is no DOM.** `<View>`/`<Text>`/`<Pressable>`, not div/span/button;
   all text must sit inside `<Text>`; styles are camelCased subsets, not CSS.
 - **Two threads, one bridge (mental model).** JS logic runs on the JS

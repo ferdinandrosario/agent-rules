@@ -13,8 +13,8 @@ the source of truth and **overrides** anything here on conflict (stack,
 version delta, UI stack, approved libraries, API contract, folder layout,
 testing/coverage policy).
 
-Version context: React **19.x** as of 2026. Check `package.json` before
-using newer APIs.
+Version context: React **19.2.x** as of 2026-11. Check `package.json`
+before using newer APIs.
 
 **How to read this:** three layers — Foundations for any reader, Everyday
 craft as the working vocabulary, Design as the judgment layer. Every rule
@@ -58,8 +58,18 @@ carries its why.
 - Every effect declares honest dependencies and returns a cleanup that
   undoes exactly what setup did. An effect that "works" only with a missing
   dep is a stale-closure bug waiting for the second render.
+- **`useEffectEvent` (19.2) for non-reactive logic called from an
+  effect** (e.g. read the latest `theme` inside a connection handler
+  without re-subscribing when `theme` changes). *Why:* it replaces the
+  two bad options — a dishonest dependency array or an
+  `eslint-disable react-hooks/exhaustive-deps`. Never put it in a
+  dependency array or pass it to children.
 - Extract repeated effect+state wiring into a custom `use*` hook — the hook
   is the unit of stateful reuse.
+- **If the project enables React Compiler, drop hand-written
+  `useMemo`/`useCallback`/`memo`** except where referential identity is a
+  semantic requirement (effect deps, third-party APIs); the compiler
+  memoizes at build time. Without it, the rule below applies.
 - **Memoize deliberately, not reflexively.** `useMemo`/`useCallback` earn
   their keep for measured-expensive work or referential stability feeding
   memoized children. Blanket memoization adds reading cost and hides the
