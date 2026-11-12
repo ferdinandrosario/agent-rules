@@ -175,7 +175,7 @@ that never arrives. Two ways out:
 ## Step actions vs `run:`
 
 ```yaml
-- uses: actions/setup-node@v6     # invokes a published action
+- uses: actions/setup-node@v7     # invokes a published action
   with:
     node-version: "26.13.0"
 
@@ -211,7 +211,7 @@ Optional inputs you may need:
 ### `actions/setup-node` — install Node.js
 
 ```yaml
-- uses: actions/setup-node@v6
+- uses: actions/setup-node@v7
   with:
     node-version: "26.13.0"
     cache: npm
@@ -236,7 +236,7 @@ Inputs:
 ```yaml
 - uses: ruby/setup-ruby@v1
   with:
-    ruby-version: 4.0.5
+    ruby-version: 4.0.9
     bundler-cache: true
     working-directory: backend
 ```
@@ -415,7 +415,7 @@ guards:
 
 | Workflow | Toolchain | Jobs |
 |---|---|---|
-| [`backend.yml`](../../.github/workflows/backend.yml) | Ruby 4.0.5 + Postgres 18 service | RuboCop · Brakeman + bundler-audit · `bin/rails db:test:prepare && bundle exec rspec` |
+| [`backend.yml`](../../.github/workflows/backend.yml) | Ruby 4.0.9 + Postgres 18 service | RuboCop · Brakeman + bundler-audit · `bin/rails db:test:prepare && bundle exec rspec` |
 | [`web.yml`](../../.github/workflows/web.yml) | Node 26.13.0 + npm cache | ESLint · `npm ci && npm test -- --watchAll=false --coverage --forceExit` |
 | [`mobile.yml`](../../.github/workflows/mobile.yml) | Node 26.13.0 + npm cache | ESLint · `npx tsc --noEmit` · `npm ci && npm test -- --coverage` (iOS + Android Jest projects in one run) |
 | [`docs-links.yml`](../../.github/workflows/docs-links.yml) | system Ruby (stdlib only) | [`scripts/check-doc-links.rb`](../../scripts/check-doc-links.rb) — broken-link + orphan check on any markdown change |
@@ -442,7 +442,7 @@ runner it just hangs.
 |---|---|---|
 | `No such file or directory` from a run step | `working-directory` set, but step ran before checkout | Move `actions/checkout` to the first step. |
 | Job hangs at "Run Jest" indefinitely | Open handles (undici, sockets, timers) keep the event loop alive | Pass `--forceExit` to Jest. Better: close the leak in `afterAll`. |
-| `Node.js 20 actions are deprecated` warning | Action pinned to a major built on Node 20 | Bump to the latest major (e.g. `setup-node@v4` → `@v6`). |
+| `Node.js 20 actions are deprecated` warning | Action pinned to a major built on Node 20 | Bump to the latest major (e.g. `setup-node@v4` → `@v7`). |
 | `Cannot find Gemfile.lock` from setup-ruby | `bundler-cache: true` but `working-directory` not set | Set `working-directory: <where Gemfile is>` on the action. |
 | `npm ci` fails with `ELOCKVERIFY` | `package.json` and `package-lock.json` out of sync | Run `npm install` locally and commit the updated lockfile. |
 | Postgres connection refused | Service container not ready when test step started | Add `--health-cmd` / `--health-retries` to the `services.<name>.options`. |

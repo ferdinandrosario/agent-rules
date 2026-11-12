@@ -110,13 +110,13 @@ What a beginner should take from this:
 | Tool | Version | Source of truth |
 |---|---|---|
 | Ubuntu | 26.04 LTS | the AMI you pick |
-| Ruby | 4.0.5 | `.ruby-version`, `.mise.toml` |
+| Ruby | 4.0.9 | `.ruby-version`, `.mise.toml` |
 | Node | 26.13.0 | `.mise.toml` |
 | Rails | 8.1.3 | `backend/Gemfile` |
 | PostgreSQL | 18 (26.04 default) | apt default cluster |
 | PostGIS | 3.x | `postgis` apt package |
 
-Ubuntu 26.04's apt Ruby is 3.3.x — too old for the `ruby "4.0.5"` pin, so
+Ubuntu 26.04's apt Ruby is 3.3.x — too old for the `ruby "4.0.9"` pin, so
 we install the exact version with `mise` (Step 4).
 
 ## Your deployment values (fill in once)
@@ -314,7 +314,7 @@ Remember the password — it goes in the env file (Step 6).
 > # expect: ALTER ROLE
 > ```
 
-## Step 4 — Install mise (Ruby 4.0.5 + Node 26.13.0)
+## Step 4 — Install mise (Ruby 4.0.9 + Node 26.13.0)
 
 *Why:* the app pins exact Ruby/Node versions; `mise` installs them.
 
@@ -326,7 +326,7 @@ mise --version                    # expect: 20xx.x.x
 mise settings ruby.compile=false  # use a prebuilt Ruby binary
 ```
 
-**Use the precompiled Ruby binary.** Compiling Ruby 4.0.5 on a 1 GB box
+**Use the precompiled Ruby binary.** Compiling Ruby 4.0.9 on a 1 GB box
 runs out of memory and fails (`BUILD FAILED … virtual memory exhausted`)
 even with swap. `ruby.compile=false` downloads a ready-built binary.
 
@@ -354,8 +354,8 @@ until you trust it** (a safety feature):
 ```sh
 cd ~/personal_manager
 mise trust        # without this, mise install errors "not trusted"
-mise install      # Ruby 4.0.5 (prebuilt) + Node 26.13.0
-mise current      # expect: ruby 4.0.5   node 26.13.0
+mise install      # Ruby 4.0.9 (prebuilt) + Node 26.13.0
+mise current      # expect: ruby 4.0.9   node 26.13.0
 ```
 
 ### Copy the master key (run on your laptop, not the server)

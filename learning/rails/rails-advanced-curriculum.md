@@ -661,7 +661,7 @@ documented in the jobs section, per the feature-doc checklist).
 
 ### 13. Ruby 4 features
 
-**(a)** The backend pins Ruby 4.0.5 (`backend/.ruby-version`), and this
+**(a)** The backend pins Ruby 4.0.9 (`backend/.ruby-version`), and this
 session applies AGENTS.md rule 12 to the language itself: the
 authoritative inventory is the NEWS file for your exact installed
 version, not blog posts — start from
@@ -696,7 +696,7 @@ objects, and pattern matching in service-layer control flow.
 
 ```sh
 ruby --version
-# ruby 4.0.5 (…) +PRISM [arm64-darwin25]   ← exact tags per your build
+# ruby 4.0.9 (…) +PRISM [arm64-darwin25]   ← exact tags per your build
 
 bin/rails runner 'puts [1, 2, 3].map { it * 2 }.sum'
 # 12
