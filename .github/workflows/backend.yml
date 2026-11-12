@@ -19,6 +19,10 @@ on:
 
 # Cancel superseded runs on the same PR branch. Never cancel on main —
 # the Phase 3 CD workflow will gate on the head commit's run finishing.
+# Least privilege: jobs only read the repo. Widen per job if a step needs more.
+permissions:
+  contents: read
+
 concurrency:
   group: backend-ci-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -31,6 +35,7 @@ jobs:
   lint:
     name: RuboCop
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     env:
       RUBOCOP_CACHE_ROOT: tmp/rubocop
@@ -63,6 +68,7 @@ jobs:
   scan:
     name: Brakeman + bundler-audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     steps:
       - name: Checkout
@@ -83,6 +89,7 @@ jobs:
   test:
     name: RSpec
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
 
     services:
