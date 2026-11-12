@@ -195,7 +195,7 @@ github.com/marketplace/actions). `run:` is for arbitrary shell. Prefer
 - uses: actions/checkout@v7
 ```
 
-Pin to a major version. `@v6` is the latest stable major. Always the
+Pin to a major version. `@v7` is the latest stable major. Always the
 **first** step that needs the working tree — nothing else can read
 source files until this runs.
 
@@ -218,7 +218,7 @@ Optional inputs you may need:
     cache-dependency-path: web/package-lock.json
 ```
 
-`@v6` is the latest stable major (see
+`@v7` is the latest stable major (see
 [Action version pinning](#action-version-pinning) below for why its
 internal Node runtime matters).
 
@@ -356,14 +356,14 @@ Two reasons to pin major versions:
 
 1. **Security** — `@main` or `@v4` (mutable) means a malicious tag
    force-push could replace the code you thought you were running. Most
-   workflows are fine pinning to a major (`@v6`); high-security ones
+   workflows are fine pinning to a major (`@v7`); high-security ones
    pin to a SHA.
 2. **Runtime deprecation** — actions are JavaScript apps that GitHub
    runs on a Node.js version baked into the action's `action.yml`
    (`using: node24`). When GitHub deprecates a Node major, every action
    still pinned to a major built against it triggers a warning — bump
    to the newest major (e.g. `setup-node@v4`, Node 20 internally, →
-   `@v6`, Node 24) before the cutoff GitHub announces.
+   `@v7`, Node 24) before the cutoff GitHub announces.
 
 To check what runtime an action uses:
 
