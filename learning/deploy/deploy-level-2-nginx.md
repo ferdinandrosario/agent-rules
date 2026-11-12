@@ -109,7 +109,7 @@ Key things a beginner trips on, all explained by this diagram:
 |---|---|---|
 | Ubuntu | 26.04 LTS | the AMI you pick |
 | Ruby | 4.0.5 | `.ruby-version`, `.mise.toml` |
-| Node | 26.3.1 | `.mise.toml` |
+| Node | 26.13.0 | `.mise.toml` |
 | Rails | 8.1.3 | `backend/Gemfile` |
 | PostgreSQL | 18 (26.04 default) | apt default cluster |
 | PostGIS | 3.x | `postgis` apt package |
@@ -341,7 +341,7 @@ it goes into the env file in Step 6 as `PERSONAL_MANAGER_DATABASE_PASSWORD`.
 > # expect: ALTER ROLE
 > ```
 
-## Step 4 — Install mise (Ruby 4.0.5 + Node 26.3.1)
+## Step 4 — Install mise (Ruby 4.0.5 + Node 26.13.0)
 
 *Why:* the app pins exact Ruby and Node versions in `.mise.toml`. Ubuntu's
 packaged Ruby is too old, so we use **mise**, a version manager that
@@ -389,8 +389,8 @@ file can run code) — so trust it first, then install:
 ```sh
 cd ~/personal_manager
 mise trust        # expect: ... trusted    (without this, mise install errors "not trusted")
-mise install      # reads .mise.toml → Ruby 4.0.5 (prebuilt, per Step 4) + Node 26.3.1
-mise current      # expect: ruby 4.0.5   node 26.3.1
+mise install      # reads .mise.toml → Ruby 4.0.5 (prebuilt, per Step 4) + Node 26.13.0
+mise current      # expect: ruby 4.0.5   node 26.13.0
 ```
 
 ### Copy the master key (run on your laptop, not the server)

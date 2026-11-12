@@ -52,7 +52,7 @@ jobs:                         # one or more independent units of work
     runs-on: ubuntu-latest    # runner OS
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: echo "hello"
 ```
 
@@ -92,7 +92,7 @@ Two step shapes — one of these is required per step:
 
 | Key | Purpose |
 |---|---|
-| `uses` | Run a published action (e.g. `actions/checkout@v6`). Versioned via `@<ref>`. |
+| `uses` | Run a published action (e.g. `actions/checkout@v7`). Versioned via `@<ref>`. |
 | `run` | Execute a shell command on the runner. |
 
 Common optional step keys:
@@ -177,7 +177,7 @@ that never arrives. Two ways out:
 ```yaml
 - uses: actions/setup-node@v6     # invokes a published action
   with:
-    node-version: "26.3.1"
+    node-version: "26.13.0"
 
 - run: npm ci                     # runs a shell command
 ```
@@ -192,7 +192,7 @@ github.com/marketplace/actions). `run:` is for arbitrary shell. Prefer
 ### `actions/checkout` — fetch the repo
 
 ```yaml
-- uses: actions/checkout@v6
+- uses: actions/checkout@v7
 ```
 
 Pin to a major version. `@v6` is the latest stable major. Always the
@@ -213,7 +213,7 @@ Optional inputs you may need:
 ```yaml
 - uses: actions/setup-node@v6
   with:
-    node-version: "26.3.1"
+    node-version: "26.13.0"
     cache: npm
     cache-dependency-path: web/package-lock.json
 ```
@@ -226,7 +226,7 @@ Inputs:
 
 | Input | Required | Notes |
 |---|---|---|
-| `node-version` | one of these | Literal version like `26.3.1` or `20.x`. |
+| `node-version` | one of these | Literal version like `26.13.0` or `26.x`. |
 | `node-version-file` | one of these | Path to `.nvmrc` or `package.json`. |
 | `cache` | optional | `npm`, `yarn`, or `pnpm`. Caches the package store keyed by the lockfile. |
 | `cache-dependency-path` | optional | Glob to the lockfile. Required for monorepos where `package-lock.json` is not at repo root. |
@@ -255,7 +255,7 @@ Inputs:
 For any toolchain not covered by setup-* actions:
 
 ```yaml
-- uses: actions/cache@v4
+- uses: actions/cache@v6
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -289,7 +289,7 @@ jobs:
           --health-timeout=5s
           --health-retries=3
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: psql -h localhost -U postgres -c '\l'
         env:
           PGPASSWORD: postgres
@@ -328,8 +328,26 @@ job dies with "No such file or directory". Always:
 
 ```yaml
 steps:
-  - uses: actions/checkout@v6     # FIRST
+  - uses: actions/checkout@v7     # FIRST
   - run: anything                  # any run: step
+```
+
+## Least privilege and timeouts
+
+Every workflow in this repo declares a top-level `permissions:` block
+and a `timeout-minutes` on every job. *Why:* the default `GITHUB_TOKEN`
+can be broader than a CI job needs, so a compromised dependency or
+action step inherits that scope; and a hung job (the open-handle Jest
+case below) otherwise burns runner minutes for up to six hours.
+
+```yaml
+permissions:
+  contents: read        # widen per job only when a step needs it
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20 # lint/scan 15 · test 20 · tiny guards 5
 ```
 
 ## Action version pinning
@@ -397,9 +415,9 @@ guards:
 
 | Workflow | Toolchain | Jobs |
 |---|---|---|
-| [`backend.yml`](../../.github/workflows/backend.yml) | Ruby 4.0.5 + Postgres 18 service | RuboCop · Brakeman + bundler-audit + ruby-audit · `bin/rails db:test:prepare && bundle exec rspec` |
-| [`web.yml`](../../.github/workflows/web.yml) | Node 26.3.1 + npm cache | ESLint · `npm ci && npm test -- --watchAll=false --coverage --forceExit` |
-| [`mobile.yml`](../../.github/workflows/mobile.yml) | Node 26.3.1 + npm cache | ESLint · `npx tsc --noEmit` · `npm ci && npm test -- --coverage` (iOS + Android Jest projects in one run) |
+| [`backend.yml`](../../.github/workflows/backend.yml) | Ruby 4.0.5 + Postgres 18 service | RuboCop · Brakeman + bundler-audit · `bin/rails db:test:prepare && bundle exec rspec` |
+| [`web.yml`](../../.github/workflows/web.yml) | Node 26.13.0 + npm cache | ESLint · `npm ci && npm test -- --watchAll=false --coverage --forceExit` |
+| [`mobile.yml`](../../.github/workflows/mobile.yml) | Node 26.13.0 + npm cache | ESLint · `npx tsc --noEmit` · `npm ci && npm test -- --coverage` (iOS + Android Jest projects in one run) |
 | [`docs-links.yml`](../../.github/workflows/docs-links.yml) | system Ruby (stdlib only) | [`scripts/check-doc-links.rb`](../../scripts/check-doc-links.rb) — broken-link + orphan check on any markdown change |
 | [`agents-pointers.yml`](../../.github/workflows/agents-pointers.yml) | none | AI-rules pointer-integrity check, documented in [ai-agents.md](ai-agents.md) |
 | [`secrets-guard.yml`](../../.github/workflows/secrets-guard.yml) | none | Fails if a secret file (master.key, .env, private keys) is ever tracked |

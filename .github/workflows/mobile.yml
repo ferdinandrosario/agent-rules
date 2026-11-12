@@ -20,6 +20,10 @@ on:
       - '!mobile/**/*.md'
       - '.github/workflows/mobile.yml'
 
+# Least privilege: jobs only read the repo. Widen per job if a step needs more.
+permissions:
+  contents: read
+
 concurrency:
   group: mobile-ci-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -32,6 +36,7 @@ jobs:
   lint:
     name: ESLint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     steps:
       - name: Checkout
@@ -40,7 +45,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: "26.3.1"
+          node-version: "26.13.0"
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
@@ -53,6 +58,7 @@ jobs:
   typecheck:
     name: TypeScript
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     steps:
       - name: Checkout
@@ -61,7 +67,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: "26.3.1"
+          node-version: "26.13.0"
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
@@ -74,6 +80,7 @@ jobs:
   audit:
     name: npm audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     steps:
       - name: Checkout
@@ -82,7 +89,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: "26.3.1"
+          node-version: "26.13.0"
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
@@ -102,6 +109,7 @@ jobs:
   test:
     name: Jest
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.repository != 'ferdinandrosario/agent-rules' # template-only guard: no app code in the template; stamp.sh strips this line
     steps:
       - name: Checkout
@@ -110,7 +118,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: "26.3.1"
+          node-version: "26.13.0"
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
