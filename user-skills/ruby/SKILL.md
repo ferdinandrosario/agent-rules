@@ -12,8 +12,9 @@ its `backend/AGENTS.md` is the source of truth and **overrides** anything
 here on conflict.
 
 Version context (verify against the project): Ruby **4.0.x** upstream as of
-2026-05; Ubuntu 26.04 apt ships Ruby 3.3.x. Don't reach for syntax newer
-than the project's pinned version — check `.ruby-version` / `Gemfile` first.
+2026-11; distro apt Ruby lags upstream, so install via `mise`, not apt.
+Don't reach for syntax newer than the project's pinned version — check
+`.ruby-version` / `Gemfile` first.
 
 **How to read this:** three layers. Foundations are non-negotiable for any
 reader; Everyday craft is the working vocabulary; Design is the judgment

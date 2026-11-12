@@ -12,7 +12,8 @@ working inside a project, its `backend/AGENTS.md` is the source of truth and
 approved gems, callback policy, folder layout).
 
 Version context (verify against the project): Rails **8.1.x** on Ruby 4.0.x
-as of 2026-05. Check the `Gemfile` before using newer APIs.
+as of 2026-11 (Rails 8.2 is still pre-release — don't target it). Check
+the `Gemfile` before using newer APIs.
 
 **How to read this:** three layers — Foundations for any reader, Everyday
 craft as the working vocabulary, Design as the judgment layer. Every rule
@@ -27,6 +28,14 @@ carries its why.
 - **Rails 8 defaults are the stack:** Solid Queue (jobs), Solid Cache,
   Solid Cable (websockets), Propshaft — reach for Sidekiq/Redis only when a
   measured need outgrows them.
+- **Rails 8.1 additions worth using:** `Rails.event.notify("order.paid",
+  order_id: id)` (Event Reporter) for structured, machine-readable
+  events instead of string-interpolated log lines; `ActiveJob::Continuable`
+  with `step` blocks so a long job resumes from its last completed step
+  after a restart/deploy instead of redoing everything; `config/ci.rb` +
+  `bin/ci` as the local CI entry point. *Why:* each replaces a
+  hand-rolled pattern (log parsing, ad-hoc checkpoint columns, scripts
+  that drift from CI).
 - **MVC responsibilities:** controllers translate HTTP ↔ domain (params in,
   envelope out); models own state + invariants; anything orchestrating
   several models is a service object. A fat controller can't be unit-tested

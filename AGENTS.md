@@ -20,9 +20,10 @@ Prioritize **simplicity, maintainability, and clarity over cleverness**.
 ## STACK
 
 ```
-backend/  → Rails 8.1 API (PostgreSQL + PostGIS, Rails defaults only — Solid Queue, Cache, Cable, Propshaft)
-web/      → React 19 + Vite (JavaScript + incremental TypeScript) — Tailwind v4 + shadcn/ui
-mobile/   → React Native + Expo SDK 56 (TypeScript) — NativeWind v4 + react-native-reusables
+backend/  → Rails 8.1 API on Ruby 4.0 (PostgreSQL 18 + PostGIS, Rails defaults only — Solid Queue, Cache, Cable, Propshaft)
+web/      → React 19.2 + Vite 8 (JavaScript + incremental TypeScript) — Tailwind v4 + shadcn/ui
+mobile/   → React Native 0.86 + Expo SDK 57 (TypeScript) — NativeWind v4 + react-native-reusables
+runtime/  → Node 26 LTS ("Lithium") · Ubuntu 26.04 LTS · pinned via mise
 docs/     → source of truth (UI stack: docs/feature/ui.md)
 ```
 
@@ -216,7 +217,13 @@ Applies to every dependency, OS, and CI runner across `backend/`,
   tracks the current LTS automatically.
 - **Compatibility pins** (e.g. `tailwindcss@3.4.17` because
   NativeWind v4 doesn't yet support Tailwind v4) require a one-line
-  `why` next to the pin in the manifest.
+  `why` next to the pin in the manifest. Re-check each pin when its
+  blocker ships GA — NativeWind v5 (Tailwind v4) is still a release
+  candidate as of 2026-11, so the pin stays until v5 is GA.
+- **Release age:** adopt a new release only after it has been public
+  ≥ 7 days (Dependabot `cooldown: default-days: 7`) — a freshly
+  published version can carry a compromised dependency before anyone
+  notices. Security fixes are exempt: apply those immediately.
 - **Minimum footprint:** remove unused deps; reject duplicate-purpose
   libs; prefer official SDKs and framework defaults over third-party
   add-ons.
@@ -263,6 +270,19 @@ the rule's source of truth:
 The concrete mechanism (envelope shape, shared-schema name, the
 attachment validator) is per-app — record it in the matching
 `<codebase>/AGENTS.md` and the relevant `docs/` page.
+
+## CI & secrets hygiene (rule, every workflow and agent session)
+
+- Every workflow declares a top-level `permissions: contents: read`
+  and widens it per job only when a step needs more; every job sets
+  `timeout-minutes`. Details: `docs/development/github-actions.md`.
+- Never `pull_request_target` with a checkout of the PR head, and never
+  interpolate `${{ github.event.* }}` text (titles, branch names) into
+  a `run:` script — pass it through `env:`.
+- Agents never read or print secret files (`.env*`, `master.key`,
+  `config/credentials/*.key`); `.claude/settings.json` denies the
+  `Read`. Use the `*.env.example` template or ask the user. A secret
+  that reaches a chat or a commit is rotated, not deleted.
 
 ## Git workflow
 
@@ -390,4 +410,6 @@ the PR description even when you don't fix it in the same change.
   is the deliberate choice — see the running-locally page under
   `docs/getting-started/`.
 - Comments restating *what* the code does. Comments explain *why* only.
+- A workflow without a top-level `permissions:` block or a job without
+  `timeout-minutes` (see CI & secrets hygiene).
 - `snake_case`/`camelCase` script filenames, or a script-name verb outside the Naming conventions vocabulary.
