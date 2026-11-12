@@ -108,13 +108,13 @@ Key things a beginner trips on, all explained by this diagram:
 | Tool | Version | Source of truth |
 |---|---|---|
 | Ubuntu | 26.04 LTS | the AMI you pick |
-| Ruby | 4.0.5 | `.ruby-version`, `.mise.toml` |
+| Ruby | 4.0.9 | `.ruby-version`, `.mise.toml` |
 | Node | 26.13.0 | `.mise.toml` |
 | Rails | 8.1.3 | `backend/Gemfile` |
 | PostgreSQL | 18 (26.04 default) | apt default cluster |
 | PostGIS | 3.x | `postgis` apt package |
 
-Ubuntu 26.04's apt Ruby is 3.3.x — **too old** for the `ruby "4.0.5"`
+Ubuntu 26.04's apt Ruby is 3.3.x — **too old** for the `ruby "4.0.9"`
 pin in `backend/Gemfile`. That's exactly why we use `mise` (Step 4) to
 install the precise version instead of `apt install ruby`. The build
 deps in Step 2 and the swap in Step 1 are still needed: native gems
@@ -341,7 +341,7 @@ it goes into the env file in Step 6 as `PERSONAL_MANAGER_DATABASE_PASSWORD`.
 > # expect: ALTER ROLE
 > ```
 
-## Step 4 — Install mise (Ruby 4.0.5 + Node 26.13.0)
+## Step 4 — Install mise (Ruby 4.0.9 + Node 26.13.0)
 
 *Why:* the app pins exact Ruby and Node versions in `.mise.toml`. Ubuntu's
 packaged Ruby is too old, so we use **mise**, a version manager that
@@ -356,7 +356,7 @@ mise settings ruby.compile=false  # use prebuilt Ruby — see note
 ```
 
 **Use the precompiled Ruby binary, don't build from source.** Compiling
-Ruby 4.0.5 on a 1 GB box exhausts memory and fails (`BUILD FAILED ...
+Ruby 4.0.9 on a 1 GB box exhausts memory and fails (`BUILD FAILED ...
 virtual memory exhausted`) even with the Step 1 swap. `ruby.compile=false`
 tells mise to download a ready-built binary instead — faster, and the
 default mise itself adopts in 2026.8.0. (The Step 2 build deps still
@@ -389,8 +389,8 @@ file can run code) — so trust it first, then install:
 ```sh
 cd ~/personal_manager
 mise trust        # expect: ... trusted    (without this, mise install errors "not trusted")
-mise install      # reads .mise.toml → Ruby 4.0.5 (prebuilt, per Step 4) + Node 26.13.0
-mise current      # expect: ruby 4.0.5   node 26.13.0
+mise install      # reads .mise.toml → Ruby 4.0.9 (prebuilt, per Step 4) + Node 26.13.0
+mise current      # expect: ruby 4.0.9   node 26.13.0
 ```
 
 ### Copy the master key (run on your laptop, not the server)

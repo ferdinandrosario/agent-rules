@@ -221,7 +221,7 @@ fi
 
 cd "$REPO_DIR"
 mise trust         # mise won't read a project's version file until you trust it
-mise install       # Ruby 4.0.5 (prebuilt) + Node 26.13.0, per the repo's pins
+mise install       # Ruby 4.0.9 (prebuilt) + Node 26.13.0, per the repo's pins
 mise current
 
 # master.key decrypts the app's stored secrets. It is deliberately NOT
